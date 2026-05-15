@@ -1,3 +1,4 @@
+import { BudgetModal } from "@/src/components/BudgetModal";
 import { CotisationBtn } from "@/src/components/CotisationBtn";
 import Screen from "@/src/components/Screen";
 import { db } from "@/src/services/firebase";
@@ -116,6 +117,7 @@ export default function HomeScreen() {
 						</Pressable>
 					</View>
 					<CotisationBtn />
+					<BudgetModal />
 				</View>
 
 				{/* Notifications */}

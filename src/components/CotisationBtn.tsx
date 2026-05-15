@@ -36,7 +36,7 @@ export const CotisationBtn = () => {
 				onPress={() => setModalVisible(true)}
 				className="w-full"
 			>
-				<Text className="text-blue-600 font-semibold">Cotiser</Text>
+				<Text className="text-green-600 font-semibold">Cotiser</Text>
 			</Pressable>
 			<Modal
 				visible={modalVisible}
