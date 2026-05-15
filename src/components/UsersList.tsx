@@ -19,7 +19,11 @@ export const UsersList = () => {
 				id: doc.id,
 				...(doc.data() as UserProfile),
 			}));
-			setUsers(list);
+			const sorted = [...list].sort((a, b) => {
+				return Number(a.approved) - Number(b.approved);
+			});
+
+			setUsers(sorted);
 			setLoading(false);
 		});
 
@@ -39,7 +43,7 @@ export const UsersList = () => {
 	return (
 		<>
 			<Text className="text-xl font-bold mb-4">
-				Pending Users ({users.length})
+				({users.length}) Acquéreurs
 			</Text>
 			{users.map((user: UserItem) => (
 				<UserItemCard

@@ -1,6 +1,6 @@
 import { db } from "@/src/services/firebase";
 import { UserProfile } from "@/src/types/user";
-import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 export const getOrCreateUserProfile = async (user: {
     uid: string;
@@ -33,4 +33,8 @@ export const getOrCreateUserProfile = async (user: {
 export const updateUserProfile = async (uid: string, data: Partial<UserProfile>) => {
     const ref = doc(db, "users", uid);
     await updateDoc(ref, data);
+};
+
+export const deleteUser = async (uid: string) => {
+    await deleteDoc(doc(db, "users", uid));
 };
