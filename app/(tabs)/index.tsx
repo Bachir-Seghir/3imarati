@@ -1,6 +1,8 @@
 import { BudgetModal } from "@/src/components/BudgetModal";
 import { CotisationBtn } from "@/src/components/CotisationBtn";
 import Screen from "@/src/components/Screen";
+import { useAuth } from "@/src/features/auth/context/AuthContext";
+import { AddComplaintModal } from "@/src/features/complaints/components/AddComplaintModal";
 import { db } from "@/src/services/firebase";
 import { router } from "expo-router";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
@@ -8,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
+	const { user, profile } = useAuth();
 	const [residents, setResidents] = useState<number | null>(0);
 	const [complaints, setComplaints] = useState<any[]>([]);
 	const [budget, setBudget] = useState<number | null>(0);
@@ -115,6 +118,13 @@ export default function HomeScreen() {
 								Rapporter un nouveau probleme dans la residence
 							</Text>
 						</Pressable>
+						{/* ➕ Floating button */}
+						{user && profile?.approved && (
+							<AddComplaintModal
+								user={user}
+								profile={profile}
+							/>
+						)}
 					</View>
 					<CotisationBtn />
 					<BudgetModal />
