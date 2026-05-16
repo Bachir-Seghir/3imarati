@@ -4,7 +4,7 @@ export type Complaint = {
     title: string;
     userName: string;
     floor: number;
-    door: string;
+    door: number;
 
     description: string;
 
