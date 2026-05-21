@@ -2,52 +2,17 @@ import { BudgetModal } from "@/src/components/BudgetModal";
 import { CotisationBtn } from "@/src/components/CotisationBtn";
 import Screen from "@/src/components/Screen";
 import { useAuth } from "@/src/features/auth/context/AuthContext";
-import { AddComplaintModal } from "@/src/features/complaints/components/AddComplaintModal";
-import { db } from "@/src/services/firebase";
+import { useBudget } from "@/src/features/dashboard/hooks/useBudget";
+import { useCompalintsStats } from "@/src/features/dashboard/hooks/useComplaintsStats";
+import { useResidentsCount } from "@/src/features/dashboard/hooks/useResidentsCount";
 import { router } from "expo-router";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
 	const { user, profile } = useAuth();
-	const [residents, setResidents] = useState<number | null>(0);
-	const [complaints, setComplaints] = useState<any[]>([]);
-	const [budget, setBudget] = useState<number | null>(0);
-
-	useEffect(() => {
-		const qUsers = query(
-			collection(db, "users"),
-			where("approved", "==", true),
-		);
-
-		const unsubscribeUsers = onSnapshot(qUsers, (snap) => {
-			setResidents(snap.size);
-		});
-
-		const qComplaints = query(collection(db, "complaints"));
-
-		const unsubscribeComp = onSnapshot(qComplaints, (snap) => {
-			const data = snap.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-
-			setComplaints(data);
-		});
-		const budgetRef = doc(db, "budget", "main");
-
-		const unsubscribeBudget = onSnapshot(budgetRef, (docSnap) => {
-			if (docSnap.exists()) {
-				setBudget(docSnap.data().amount || 0);
-			}
-		});
-		return () => {
-			unsubscribeUsers();
-			unsubscribeComp();
-			unsubscribeBudget();
-		};
-	}, []);
+	const budget = useBudget();
+	const residents = useResidentsCount();
+	const complaints = useCompalintsStats();
 
 	return (
 		<Screen>
@@ -119,12 +84,6 @@ export default function HomeScreen() {
 							</Text>
 						</Pressable>
 						{/* ➕ Floating button */}
-						{user && profile?.approved && (
-							<AddComplaintModal
-								user={user}
-								profile={profile}
-							/>
-						)}
 					</View>
 					<CotisationBtn />
 					<BudgetModal />
