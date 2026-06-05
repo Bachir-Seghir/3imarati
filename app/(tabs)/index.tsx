@@ -1,7 +1,6 @@
 import { BudgetModal } from "@/src/components/BudgetModal";
 import { CotisationBtn } from "@/src/components/CotisationBtn";
 import Screen from "@/src/components/Screen";
-import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { useBudget } from "@/src/features/dashboard/hooks/useBudget";
 import { useCompalintsStats } from "@/src/features/dashboard/hooks/useComplaintsStats";
 import { useResidentsCount } from "@/src/features/dashboard/hooks/useResidentsCount";
@@ -9,7 +8,6 @@ import { router } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
-	const { user, profile } = useAuth();
 	const budget = useBudget();
 	const residents = useResidentsCount();
 	const complaints = useCompalintsStats();

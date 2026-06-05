@@ -1,25 +1,25 @@
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { db } from "@/src/services/firebase";
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export default function TabsLayout() {
-	const { profile, loading } = useAuth();
+	const { user, profile, loading } = useAuth();
 	const [pendingCount, setPendingCount] = useState(0);
+	const router = useRouter();
 
+	useEffect(() => {
+		if (!user) {
+			router.replace("/auth/login");
+		}
+	}, [user]);
+
+	if (!user) return null;
 	const canManage =
 		profile?.role === "admin" || profile?.role === "budget_manager";
 
-	/* // ⏳ wait until profile is ready
-	if (loading || !profile) {
-		return (
-			<View className="flex-1 justify-center items-center">
-				<ActivityIndicator />
-			</View>
-		);
-	} */
 	useEffect(() => {
 		if (!canManage) return;
 
