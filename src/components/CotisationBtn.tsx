@@ -12,8 +12,8 @@ export const CotisationBtn = () => {
 
 	// 🟢 Submit add to budget
 	const handleAdd = async () => {
-		if (!user) {
-			alert("Inscrit à l'application pour cotiser");
+		if (!user || !profile.approved) {
+			alert("Vous n'etes pas encore apprové pour cotiser");
 			setAmount("");
 			setModalVisible(false);
 			return;
