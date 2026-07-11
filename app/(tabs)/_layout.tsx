@@ -9,14 +9,12 @@ export default function TabsLayout() {
 	const { user, profile, loading } = useAuth();
 	const [pendingCount, setPendingCount] = useState(0);
 	const router = useRouter();
-
 	useEffect(() => {
 		if (!user) {
 			router.replace("/auth/login");
 		}
 	}, [user]);
 
-	if (!user) return null;
 	const canManage =
 		profile?.role === "admin" || profile?.role === "budget_manager";
 

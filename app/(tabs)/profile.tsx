@@ -3,7 +3,7 @@ import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { updateUserProfile } from "@/src/features/auth/services/user.service";
 import { auth } from "@/src/services/firebase";
 import { Ionicons } from "@expo/vector-icons";
-import { Redirect, router } from "expo-router";
+import { Redirect } from "expo-router";
 import { signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
 import {
@@ -73,7 +73,7 @@ export default function ProfileScreen() {
 	}
 	const handleLogout = async () => {
 		await signOut(auth);
-		router.replace("/(tabs)");
+		<Redirect href={"/(tabs)"} />;
 	};
 	return (
 		<Screen>

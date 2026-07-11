@@ -4,7 +4,7 @@ import { UsersList } from "@/src/components/UsersList";
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { createMonthlyPayment } from "@/src/features/payments/services/payment.service";
 import { db } from "@/src/services/firebase";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -44,6 +44,14 @@ export default function AdminScreen() {
 				>
 					<Text className="text-xl font-bold text-white text-center">
 						Generer les Paiments mensuels
+					</Text>
+				</Pressable>
+				<Pressable
+					onPress={() => router.push("/(tabs)/payments")}
+					className="rounded-md bg-orange-500 py-3 px-4 mb-3"
+				>
+					<Text className="text-xl font-bold text-white text-center">
+						Passer au page des payments
 					</Text>
 				</Pressable>
 

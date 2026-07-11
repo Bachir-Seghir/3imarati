@@ -9,19 +9,36 @@ export default function AppHeader() {
 	const firstLetter = profile?.fullName?.charAt(0).toUpperCase() || "Inv";
 	return (
 		<>
-			{profile?.role === "admin" && (
+			<View className=" bg-slate-800 flex-row justify-between">
 				<Pressable
-					onPress={() => router.push("/admin")}
-					className="flex gap-1 px-6 py-2 bg-slate-800 flex-row justify-end items-center"
+					onPress={() => {
+						if (router.canGoBack()) {
+							router.back();
+						}
+					}}
+					className="flex px-6 py-2 items-center"
 				>
 					<Ionicons
-						name="settings-sharp"
+						name="arrow-back"
 						size={22}
-						color="#9ed1f1"
+						color="#ececec"
 					/>
-					<Text className="font-semibold text-sky-100">Menu Admin</Text>
 				</Pressable>
-			)}
+				{profile?.role === "admin" && (
+					<Pressable
+						onPress={() => router.push("/admin")}
+						className="flex flex-row gap-1 px-6 py-2 items-center"
+					>
+						<Ionicons
+							name="settings-sharp"
+							size={22}
+							color="#9ed1f1"
+						/>
+						<Text className="font-semibold text-sky-100">Menu Admin</Text>
+					</Pressable>
+				)}
+			</View>
+
 			<View className="flex flex-row justify-between px-4 pt-5 pb-2 border-b-2 border-b-white items-center">
 				<Pressable onPress={() => router.push("/(tabs)")}>
 					<Image
