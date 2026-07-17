@@ -4,7 +4,7 @@ import { AddComplaintModal } from "@/src/features/complaints/components/AddCompl
 import { db } from "@/src/services/firebase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, Text, View } from "react-native";
 
 function getStatusColor(status: string) {
 	switch (status) {
@@ -21,6 +21,8 @@ function getStatusColor(status: string) {
 export default function ComplaintsScreen() {
 	const { user, profile } = useAuth();
 	const [complaints, setComplaints] = useState<any[]>([]);
+	const [filteredComplaints, setFilteredComplaints] = useState<any[]>([]);
+	const [selectedStatus, setSelectedStatus] = useState<string>("");
 
 	useEffect(() => {
 		const q = query(collection(db, "complaints"), orderBy("createdAt", "desc"));
@@ -32,11 +34,22 @@ export default function ComplaintsScreen() {
 			}));
 
 			setComplaints(data);
+			setFilteredComplaints(data);
 		});
 
 		return () => unsubscribe();
 	}, []);
 
+	const handleFilter = (status: string) => {
+		setSelectedStatus(status);
+
+		setFilteredComplaints(complaints.filter((item) => item.status === status));
+	};
+
+	const handleReset = () => {
+		setSelectedStatus("");
+		setFilteredComplaints(complaints);
+	};
 	return (
 		<Screen>
 			<ScrollView
@@ -46,9 +59,39 @@ export default function ComplaintsScreen() {
 					gap: 20,
 				}}
 			>
+				<View className="bg-white rounded-md border border-slate-200 p-4 mb-4">
+					<Text className="font-semibold mb-3">Filtrer par état</Text>
+
+					<View className="flex-row flex-wrap gap-2">
+						{["En_Attente", "En_Traitement", "Résolue"].map((status) => (
+							<Pressable
+								key={status}
+								onPress={() => handleFilter(status)}
+								className={`px-3 py-2 rounded-md ${
+									selectedStatus === status ? "bg-blue-600" : "bg-gray-200"
+								}`}
+							>
+								<Text
+									className={`font-medium ${
+										selectedStatus === status ? "text-white" : "text-black"
+									}`}
+								>
+									{status.replace("_", " ")}
+								</Text>
+							</Pressable>
+						))}
+
+						<Pressable
+							onPress={handleReset}
+							className="px-3 py-2 rounded-md bg-red-500"
+						>
+							<Text className="text-white font-medium">Afficher tous</Text>
+						</Pressable>
+					</View>
+				</View>
 				<Text className="text-2xl font-bold mb-4">Plaintes</Text>
 
-				{complaints.map((item) => (
+				{filteredComplaints.map((item) => (
 					<View
 						key={item.id}
 						className="bg-white rounded-md border border-slate-200"
