@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { Complaint } from "../features/complaints/types/complaint";
+
+type Complaint = {
+	status: string;
+	[key: string]: any;
+};
 
 type Props = {
 	data: Complaint[];
@@ -9,13 +13,7 @@ type Props = {
 	highlight?: boolean;
 };
 
-const status = [
-	{ label: "En attente", value: "en_attente" },
-	{ label: "En traitement", value: "en_traitement" },
-	{ label: "Résolues", value: "resolues" },
-];
-
-export function ComplaintStatusFilter({
+export function ComplaintsFilter({
 	data,
 	onFilter,
 	onActiveChange,
@@ -37,41 +35,73 @@ export function ComplaintStatusFilter({
 	const handleReset = () => {
 		setSelectedStatus("");
 		onFilter(data);
+
 		setActive(false);
 		onActiveChange?.(false);
 	};
 
 	return (
 		<View
-			className={`${active && highlight ? "bg-orange-100" : ""} border-2 border-white p-4 rounded-md mb-4`}
+			className={`${
+				active && highlight ? "bg-orange-100" : ""
+			} border-2 border-white p-4 rounded-md mb-4`}
 		>
-			<Text className="font-semibold mb-3">Filtrer par statut</Text>
+			<Text className="font-semibold mb-3">Filtrer par état</Text>
 
-			<View className="flex-row flex-wrap gap-2 mb-3">
-				{status.map((s) => (
-					<Pressable
-						key={s.value}
-						onPress={() => handleFilter(s.value)}
-						className={`px-3 py-2 rounded-md ${
-							selectedStatus === s.value ? "bg-blue-600" : "bg-gray-300"
+			<View className="flex-row flex-wrap justify-center gap-2">
+				<Pressable
+					onPress={() => handleFilter("En_Attente")}
+					className={`px-3 py-2 rounded-md bg-gray-300 ${
+						selectedStatus === "En_Attente" ? "bg-red-500" : "bg-gray-200"
+					}`}
+				>
+					<Text
+						className={`font-medium ${
+							selectedStatus === "En_Attente" ? "text-white" : "text-black"
 						}`}
 					>
-						<Text
-							className={`${
-								selectedStatus === s.value ? "text-white" : "text-black"
-							}`}
-						>
-							{s.label}
-						</Text>
-					</Pressable>
-				))}
+						En attente
+					</Text>
+				</Pressable>
+
+				<Pressable
+					onPress={() => handleFilter("En_Traitement")}
+					className={`px-3 py-2 rounded-md bg-gray-300 ${
+						selectedStatus === "En_Traitement" ? "bg-yellow-500" : "bg-gray-200"
+					}`}
+				>
+					<Text
+						className={`font-medium ${
+							selectedStatus === "En_Traitement" ? "text-white" : "text-black"
+						}`}
+					>
+						En traitement
+					</Text>
+				</Pressable>
+
+				<Pressable
+					onPress={() => handleFilter("Résolue")}
+					className={`px-3 py-2 rounded-md bg-gray-300 ${
+						selectedStatus === "Résolue" ? "bg-green-500" : "bg-gray-200"
+					}`}
+				>
+					<Text
+						className={`font-medium ${
+							selectedStatus === "Résolue" ? "text-white" : "text-black"
+						}`}
+					>
+						Résolue
+					</Text>
+				</Pressable>
 			</View>
 
 			<Pressable
 				onPress={handleReset}
-				className="bg-blue-600 py-2 rounded-md"
+				className="bg-blue-600 py-2 rounded-md mt-3"
 			>
-				<Text className="text-white text-center">Afficher tous</Text>
+				<Text className="text-white text-center font-medium">
+					Afficher tous
+				</Text>
 			</Pressable>
 		</View>
 	);

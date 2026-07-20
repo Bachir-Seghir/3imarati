@@ -15,7 +15,6 @@ import { addToBudget } from "./budget.service";
 
 export const createMonthlyPayment = async (userId: string) => {
     const month = new Date().toISOString().slice(0, 7);
-    console.log(month);
 
     // 🔍 check if already exists
     const q = query(

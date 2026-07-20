@@ -31,16 +31,16 @@ export default function LoginScreen() {
 		}
 	};
 	useEffect(() => {
-		if (user) {
-			setLoading(false);
-			router.replace("/");
-		}
+		if (!user) return;
+
+		setLoading(false);
+		router.replace("/(tabs)");
 	}, [user]);
 
 	return (
 		<View className="flex-1 px-4 pt-20">
 			<View className="flex flex-row justify-center mb-6">
-				<Pressable onPress={() => router.push("/(tabs)")}>
+				<Pressable onPress={() => router.replace("/(tabs)")}>
 					<Image
 						source={require("@/assets/images/logo-3.png")}
 						style={{ width: 100, height: 100 }}
