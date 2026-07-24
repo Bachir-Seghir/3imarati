@@ -6,11 +6,15 @@ export type Complaint = {
     floor: number;
     door: number;
 
+    assignedToId?: string | null;
+    assignedToName?: string | null;
+    assignedAt?: any;
+
     description: string;
 
     category: "Maintenance" | "Bruit" | "Nettoyage" | "Securité" | "Autre";
 
-    status: "En Attente" | "En Traitement" | "Résolue";
+    status: "En_Attente" | "En_Traitement" | "Validée" | "Résolue";
 
     priority: "Normale" | "Importante";
 

@@ -3,9 +3,18 @@ import Screen from "@/src/components/Screen";
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { AddComplaintModal } from "@/src/features/complaints/components/AddComplaintModal";
 import { db } from "@/src/services/firebase";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { Ionicons } from "@expo/vector-icons";
+import {
+	collection,
+	doc,
+	onSnapshot,
+	orderBy,
+	query,
+	serverTimestamp,
+	updateDoc,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, Text, View } from "react-native";
 
 function getStatusColor(status: string) {
 	switch (status) {
@@ -42,7 +51,15 @@ export default function ComplaintsScreen() {
 
 		return () => unsubscribe();
 	}, []);
-
+	const handleTakeComplaint = async (complaint: any) => {
+		await updateDoc(doc(db, "complaints", complaint.id), {
+			status: "En_Traitement",
+			assignedToId: user?.uid,
+			assignedToName: profile?.fullName,
+			assignedAt: serverTimestamp(),
+			updatedAt: serverTimestamp(),
+		});
+	};
 	return (
 		<Screen>
 			<ScrollView
@@ -112,6 +129,34 @@ export default function ComplaintsScreen() {
 									{item.userName} - {item.floor}-{item.door}
 								</Text>
 							</View>
+							<View className="flex-row justify-between">
+								{item.assignedToName && (
+									<>
+										<Text className="font-semibold text-orange-500 text-md mt-2">
+											Pris en charge par : ''
+											<Ionicons
+												name="person-circle-outline"
+												size={18}
+												color="#orange"
+											/>
+											''
+										</Text>
+									</>
+								)}
+								<Text className="font-semibold text-orange-500 text-md mt-2">
+									{item.assignedToName}
+								</Text>
+							</View>
+							{item.status === "En_Attente" && (
+								<Pressable
+									className="bg-orange-500 mt-3 p-2 rounded-md"
+									onPress={() => handleTakeComplaint(item)}
+								>
+									<Text className="text-white text-center font-semibold">
+										Prendre en charge
+									</Text>
+								</Pressable>
+							)}
 						</View>
 					</View>
 				))}

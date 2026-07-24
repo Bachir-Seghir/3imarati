@@ -17,6 +17,9 @@ export const createComplaint = async (data: Omit<Complaint, "id" | "createdAt" |
     return await addDoc(collection(db, "complaints"), {
         ...data,
         status: "En_Attente",
+        assignedToId: null,
+        assignedToName: null,
+        assignedAt: null,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
     });
