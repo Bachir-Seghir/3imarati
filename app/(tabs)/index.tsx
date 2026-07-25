@@ -4,6 +4,8 @@ import Screen from "@/src/components/Screen";
 import { useBudget } from "@/src/features/dashboard/hooks/useBudget";
 import { useCompalintsStats } from "@/src/features/dashboard/hooks/useComplaintsStats";
 import { useResidentsCount } from "@/src/features/dashboard/hooks/useResidentsCount";
+import { AddNotificationModal } from "@/src/features/notifications/components/AddNotificationModal";
+import NotificationsCarousel from "@/src/features/notifications/components/NotificationsCarousel";
 import { router } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
@@ -19,7 +21,6 @@ export default function HomeScreen() {
 				contentContainerStyle={{ flexGrow: 1 }}
 			>
 				{/* Stats Cards */}
-
 				<View className="flex-row justify-between flex-wrap gap-4">
 					<View className="bg-white p-4 rounded-2xl w-[48%] shadow-sm">
 						<Text className="text-gray-500 font-semibold">
@@ -66,7 +67,6 @@ export default function HomeScreen() {
 						</Text>
 					</View>
 				</View>
-
 				{/* Quick Actions */}
 				<Text className="mt-8 mb-3 text-gray-700 font-semibold">
 					Actions Rapides
@@ -85,28 +85,10 @@ export default function HomeScreen() {
 					</View>
 					<CotisationBtn />
 					<BudgetModal />
+					<AddNotificationModal />
 				</View>
-
 				{/* Notifications */}
-				<View className="mt-auto mb-4 ">
-					<Text className="mt-8 mb-3 text-green-500 font-semibold">
-						Notifications Importantes
-					</Text>
-					<View className="flex flex-row gap-x-2">
-						<View className="bg-red-400 p-4 rounded-2xl shadow-sm">
-							<Text className="text-white mt-1 font-semibold text-xl">
-								Problem du Cable Assenceurs Droite{"\n"}
-								04 Personnes Max SVP
-							</Text>
-						</View>
-						<View className="bg-green-400 p-4 rounded-2xl shadow-sm">
-							<Text className="text-white mt-1 font-semibold text-xl">
-								Lumiere exterieur reparee
-							</Text>
-						</View>
-					</View>
-				</View>
-				{/* ➕ Floating button */}
+				<NotificationsCarousel />
 			</ScrollView>
 		</Screen>
 	);
