@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-	Animated,
 	Dimensions,
 	Modal,
 	Pressable,
@@ -8,6 +7,8 @@ import {
 	Text,
 	View,
 } from "react-native";
+
+import Carousel from "react-native-reanimated-carousel";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -18,14 +19,9 @@ const { width } = Dimensions.get("window");
 
 export default function NotificationsCarousel() {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
-	//const [index, setIndex] = useState(0);
 
 	const [selected, setSelected] = useState<Notification | null>(null);
 	const [visible, setVisible] = useState(false);
-
-	const translateX = useRef(new Animated.Value(width)).current;
-
-	const animation = useRef<Animated.CompositeAnimation | null>(null);
 
 	useEffect(() => {
 		const unsubscribe = subscribeNotifications(setNotifications);
@@ -33,65 +29,41 @@ export default function NotificationsCarousel() {
 		return unsubscribe;
 	}, []);
 
-	useEffect(() => {
-		if (notifications.length === 0) return;
-
-		startAnimation();
-	}, [notifications]);
-	const CARD_WIDTH = width * 0.82 + 12;
-
-	const startAnimation = () => {
-		translateX.setValue(0);
-
-		animation.current = Animated.loop(
-			Animated.timing(translateX, {
-				toValue: -(notifications.length * CARD_WIDTH),
-				duration: notifications.length * 4000,
-				useNativeDriver: true,
-			}),
-		);
-
-		animation.current.start();
-	};
-
-	const stopAnimation = () => {
-		animation.current?.stop();
-	};
-
 	const closeNotification = () => {
 		setVisible(false);
-
-		setTimeout(() => {
-			startAnimation();
-		}, 100);
 	};
 
 	if (!notifications.length) return null;
 
-	const marqueeNotifications = [...notifications, ...notifications];
 	return (
 		<>
 			<View className="mt-8 mb-4 overflow-hidden">
 				<Text className="mb-3 text-green-500 font-semibold text-lg">
 					Notifications
 				</Text>
-				<Animated.View
-					style={{
-						flexDirection: "row",
-						transform: [{ translateX }],
-					}}
-				>
-					{marqueeNotifications.map((item, i) => {
+				<Carousel
+					loop
+					autoPlay={true}
+					autoPlayInterval={1000}
+					scrollAnimationDuration={1500}
+					width={width - 22}
+					height={180}
+					data={notifications}
+					pagingEnabled={false}
+					snapEnabled={true}
+					mode="parallax"
+					renderItem={({ item }: { item: any }) => {
 						const important = item.category === "Importante";
 
 						return (
 							<Pressable
-								key={`${item.id}-${i}`}
-								onPressIn={stopAnimation}
-								onPressOut={startAnimation}
+								onPress={() => {
+									setSelected(item);
+									setVisible(true);
+								}}
 								style={{
-									width: width * 0.82,
-									marginRight: 12,
+									width: width - 32,
+									alignSelf: "center",
 								}}
 							>
 								<View
@@ -106,37 +78,33 @@ export default function NotificationsCarousel() {
 											color="white"
 										/>
 
-										<Text className="text-white font-bold ml-2">
+										<Text className="text-white font-bold text-lg ml-2">
 											{item.category}
-										</Text>
-										<Text className="text-white font-bold ml-auto ">
-											Par: {item.createdByName}
 										</Text>
 									</View>
 
 									<Text
-										className="text-white text-xl font-bold mt-3"
+										className="text-white font-bold text-xl mt-3"
 										numberOfLines={2}
 									>
 										{item.title}
 									</Text>
-									<Pressable
-										className="flex flex-row justify-end"
-										onPress={() => {
-											stopAnimation();
-											setSelected(item);
-											setVisible(true);
-										}}
+
+									<Text
+										className="text-white mt-2"
+										numberOfLines={2}
 									>
-										<Text className="text-white text-xs font-bold mt-2">
-											Click pour plus de détails
-										</Text>
-									</Pressable>
+										{item.description}
+									</Text>
+
+									<Text className="text-white mt-4 opacity-80">
+										Appuyez pour afficher plus...
+									</Text>
 								</View>
 							</Pressable>
 						);
-					})}
-				</Animated.View>
+					}}
+				/>
 			</View>
 
 			<Modal
