@@ -34,27 +34,39 @@ export default function AdminScreen() {
 	return (
 		<Screen>
 			<ScrollView className="p-4">
-				<Text className="text-2xl font-bold text-gray-800 mb-4">
+				<Text className="text-2xl text-center font-bold text-gray-800 mb-4">
 					{profile?.role === "admin" ? "Administrateur" : "Manageur du Budget"}
 				</Text>
 
-				<Pressable
-					onPress={generateMonthlyPayments}
-					className="rounded-md bg-blue-500 py-3 px-4 mb-3"
-				>
-					<Text className="text-xl font-bold text-white text-center">
-						Generer les Paiments mensuels
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={() => router.push("/(tabs)/payments")}
-					className="rounded-md bg-orange-500 py-3 px-4 mb-3"
-				>
-					<Text className="text-xl font-bold text-white text-center">
-						Passer au page des payments
-					</Text>
-				</Pressable>
-
+				<View className="flex-row flex-wrap gap-2">
+					<Pressable
+						onPress={generateMonthlyPayments}
+						className="w-[48%] rounded-md bg-orange-500 py-3 px-4 mb-3"
+					>
+						<Text className="text-lg font-bold text-white text-center">
+							Generer les Paiments mensuels
+						</Text>
+					</Pressable>
+					<Pressable
+						onPress={() => router.push("/admin/notifications")}
+						className="w-[48%] rounded-md bg-green-500 py-3 px-4 mb-3"
+					>
+						<Text className="text-lg font-bold text-white text-center">
+							Gérer les Notifications
+						</Text>
+					</Pressable>
+					<Pressable
+						onPress={() => router.push("/(tabs)/payments")}
+						className="w-[48%] rounded-md bg-sky-500 py-3 px-4 mb-3"
+					>
+						<Text className="text-lg font-bold text-white text-center">
+							Passer au page des payments
+						</Text>
+					</Pressable>
+				</View>
+				<Text className="text-2xl text-center font-bold text-gray-800 my-4">
+					Volet de Management
+				</Text>
 				<View className="flex-row mb-4 border border-white rounded-md">
 					<Pressable
 						onPress={() => setActiveTab("users")}

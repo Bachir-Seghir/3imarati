@@ -37,8 +37,8 @@ export default function NotificationsCarousel() {
 
 	return (
 		<>
-			<View className="mt-8 mb-4 overflow-hidden">
-				<Text className="mb-3 text-green-500 font-semibold text-lg">
+			<View className="mt-8">
+				<Text className="mb-1 mx-auto text-slate-700 font-semibold text-2xl">
 					Notifications
 				</Text>
 				<Carousel
@@ -46,11 +46,11 @@ export default function NotificationsCarousel() {
 					autoPlay={true}
 					autoPlayInterval={1000}
 					scrollAnimationDuration={1500}
-					width={width - 22}
+					width={width}
 					height={180}
 					data={notifications}
-					pagingEnabled={false}
-					snapEnabled={true}
+					pagingEnabled={true}
+					snapEnabled={false}
 					mode="parallax"
 					renderItem={({ item }: { item: any }) => {
 						const important = item.category === "Importante";
@@ -62,7 +62,7 @@ export default function NotificationsCarousel() {
 									setVisible(true);
 								}}
 								style={{
-									width: width - 32,
+									width: width,
 									alignSelf: "center",
 								}}
 							>
@@ -81,6 +81,9 @@ export default function NotificationsCarousel() {
 										<Text className="text-white font-bold text-lg ml-2">
 											{item.category}
 										</Text>
+										<Text className="text-white font-bold text-lg ml-auto">
+											Par : {item.createdByName}
+										</Text>
 									</View>
 
 									<Text
@@ -88,13 +91,6 @@ export default function NotificationsCarousel() {
 										numberOfLines={2}
 									>
 										{item.title}
-									</Text>
-
-									<Text
-										className="text-white mt-2"
-										numberOfLines={2}
-									>
-										{item.description}
 									</Text>
 
 									<Text className="text-white mt-4 opacity-80">

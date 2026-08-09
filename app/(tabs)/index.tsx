@@ -17,17 +17,28 @@ export default function HomeScreen() {
 	return (
 		<Screen>
 			<ScrollView
-				className="flex-1 h-full px-4"
+				className="flex-1 h-full px-2"
 				contentContainerStyle={{ flexGrow: 1 }}
 			>
 				{/* Stats Cards */}
 				<View className="flex-row justify-between flex-wrap gap-4">
-					<View className="bg-white p-4 rounded-2xl w-[48%] shadow-sm">
-						<Text className="text-gray-500 font-semibold">
-							Résidents Inscrits
-						</Text>
-						<Text className="text-xl font-bold mt-1">{residents} / 72</Text>
+					<View className="w-[48%] gap-y-2">
+						<View className="bg-white p-4 rounded-2xl shadow-sm">
+							<Text className="text-gray-500 font-semibold">
+								Résidents Inscrits
+							</Text>
+							<Text className="text-xl font-bold mt-1">{residents} / 72</Text>
+						</View>
+						<View className="bg-white p-4 rounded-2xl shadow-sm">
+							<Text className="text-gray-500 font-semibold">
+								Solde Caisse Noire
+							</Text>
+							<Text className="text-xl font-bold mt-1 text-orange-600">
+								{budget}
+							</Text>
+						</View>
 					</View>
+
 					<View className="bg-white p-4 rounded-2xl w-[48%] shadow-sm">
 						<Pressable onPress={() => router.push("/(tabs)/complaints")}>
 							<Text className="text-gray-500 font-semibold">Plaintes</Text>
@@ -56,15 +67,6 @@ export default function HomeScreen() {
 								<Text>Résolues</Text>
 							</View>
 						</Pressable>
-					</View>
-
-					<View className="bg-white p-4 rounded-2xl w-[48%] shadow-sm">
-						<Text className="text-gray-500 font-semibold">
-							Solde Caisse Noire
-						</Text>
-						<Text className="text-xl font-bold mt-1 text-orange-600">
-							{budget}
-						</Text>
 					</View>
 				</View>
 				{/* Quick Actions */}

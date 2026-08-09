@@ -11,7 +11,7 @@ export default function Screen({ children }: { children: ReactNode }) {
 		>
 			<AppHeader />
 
-			<View className="flex-1 px-4 pt-4 ">{children}</View>
+			<View className="flex-1 pt-4 ">{children}</View>
 		</SafeAreaView>
 	);
 }
