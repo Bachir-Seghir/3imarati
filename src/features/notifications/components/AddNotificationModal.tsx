@@ -11,13 +11,9 @@ import {
 import { useAuth } from "../../auth/context/AuthContext";
 import { createNotification } from "../services/norification.service";
 
-type Props = {
-	user: any;
-	profile: any;
-};
-
 export function AddNotificationModal() {
 	const { user, profile } = useAuth();
+
 	const [visible, setModalVisible] = useState(false);
 
 	const [title, setTitle] = useState("");
@@ -37,7 +33,6 @@ export function AddNotificationModal() {
 				title,
 				description,
 				category,
-
 				createdById: user.uid,
 				createdByName: profile.fullName,
 			});
@@ -53,33 +48,40 @@ export function AddNotificationModal() {
 	};
 
 	return (
-		<View className="bg-white p-4 rounded-2xl shadow-sm">
-			{/* Floating Button */}
+		<View className="w-[48%]">
+			{/* Button */}
 			<Pressable
 				onPress={() => setModalVisible(true)}
-				className="w-full"
+				className="rounded-md bg-red-400 py-3 px-4 mb-3"
 			>
-				<Text className="text-blue-600 font-semibold">
+				<Text className="text-lg font-bold text-white text-center">
 					Ajouter une Notification
 				</Text>
 			</Pressable>
 
 			{/* Modal */}
-
 			<Modal
 				visible={visible}
 				animationType="slide"
 				transparent
+				onRequestClose={() => setModalVisible(false)}
 			>
-				<View className="flex-1 justify-end bg-black/40">
-					<View className="bg-white rounded-t-3xl p-6 max-h-[90%]">
+				{/* BACKGROUND - click here closes modal */}
+				<Pressable
+					className="flex-1 justify-end bg-black/40"
+					onPress={() => setModalVisible(false)}
+				>
+					{/* MODAL CONTENT - click here does NOT close modal */}
+					<Pressable
+						className="bg-white rounded-t-3xl p-6 max-h-[90%]"
+						onPress={(e) => e.stopPropagation()}
+					>
 						<ScrollView showsVerticalScrollIndicator={false}>
 							<Text className="text-2xl font-bold mb-6">
 								Nouvelle notification
 							</Text>
 
 							{/* Title */}
-
 							<Text className="font-semibold mb-2">Titre</Text>
 
 							<TextInput
@@ -90,7 +92,6 @@ export function AddNotificationModal() {
 							/>
 
 							{/* Description */}
-
 							<Text className="font-semibold mb-2">Description</Text>
 
 							<TextInput
@@ -104,7 +105,6 @@ export function AddNotificationModal() {
 							/>
 
 							{/* Category */}
-
 							<Text className="font-semibold mb-3">Catégorie</Text>
 
 							<View className="flex-row gap-3 mb-6">
@@ -140,7 +140,6 @@ export function AddNotificationModal() {
 							</View>
 
 							{/* Buttons */}
-
 							<View className="flex-row justify-end gap-3">
 								<Pressable
 									onPress={() => setModalVisible(false)}
@@ -160,8 +159,8 @@ export function AddNotificationModal() {
 								</Pressable>
 							</View>
 						</ScrollView>
-					</View>
-				</View>
+					</Pressable>
+				</Pressable>
 			</Modal>
 		</View>
 	);

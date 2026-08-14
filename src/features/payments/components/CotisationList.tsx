@@ -57,7 +57,7 @@ export const CotisationList = ({
 								className="bg-green-600 py-2 px-6 mt-2 rounded-md"
 							>
 								<Text className="text-white text-center font-semibold">
-									Approve
+									Effectuée
 								</Text>
 							</Pressable>
 							<Pressable
@@ -65,7 +65,7 @@ export const CotisationList = ({
 								className="bg-red-500 py-2 px-6 mt-2 rounded-md"
 							>
 								<Text className="text-white text-center font-semibold">
-									Annuler
+									Annulée
 								</Text>
 							</Pressable>
 						</View>
@@ -97,10 +97,10 @@ export const CotisationList = ({
 						Date : {r.approvedAt?.toDate().toLocaleDateString()}
 					</Text>
 					{r.status === "approved" && (
-						<Text className="text-green-500">✔ Approuvé</Text>
+						<Text className="text-green-500">✔ Effectuée</Text>
 					)}
 					{r.status === "rejected" && (
-						<Text className="text-red-500">x Rejected</Text>
+						<Text className="text-red-500">x Annulée</Text>
 					)}
 				</View>
 			))}

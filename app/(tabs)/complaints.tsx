@@ -69,7 +69,7 @@ export default function ComplaintsScreen() {
 					gap: 20,
 				}}
 			>
-				<Text className="text-2xl font-bold">Plaintes</Text>
+				<Text className="text-2xl mx-auto font-bold">Réclamations</Text>
 
 				<ComplaintsFilter
 					data={complaints}

@@ -37,7 +37,7 @@ export default function NotificationsCarousel() {
 
 	return (
 		<>
-			<View className="mt-8">
+			<View className="mt-[60px]">
 				<Text className="mb-1 mx-auto text-slate-700 font-semibold text-2xl">
 					Notifications
 				</Text>
@@ -92,10 +92,14 @@ export default function NotificationsCarousel() {
 									>
 										{item.title}
 									</Text>
-
-									<Text className="text-white mt-4 opacity-80">
-										Appuyez pour afficher plus...
-									</Text>
+									<View className="flex-row justify-between">
+										<Text className="text-white mt-4 opacity-80">
+											Appuyez pour afficher plus...
+										</Text>
+										<Text className="text-white mt-4 opacity-80">
+											{item.createdAt?.toDate?.()?.toLocaleDateString()}
+										</Text>
+									</View>
 								</View>
 							</Pressable>
 						);
@@ -152,9 +156,15 @@ export default function NotificationsCarousel() {
 							<Text className="text-gray-700 text-lg leading-7">
 								{selected?.description}
 							</Text>
-							<Text className="text-gray-700 font-bold ml-auto ">
-								Par : {selected?.createdByName}
-							</Text>
+
+							<View className="flex-row justify-between mt-3">
+								<Text className="text-gray-700">
+									{selected?.createdAt?.toDate?.()?.toLocaleDateString()}
+								</Text>
+								<Text className="text-gray-700 font-bold ml-auto ">
+									Par : {selected?.createdByName}
+								</Text>
+							</View>
 						</ScrollView>
 					</View>
 				</View>

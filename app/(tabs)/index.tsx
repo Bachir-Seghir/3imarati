@@ -4,7 +4,6 @@ import Screen from "@/src/components/Screen";
 import { useBudget } from "@/src/features/dashboard/hooks/useBudget";
 import { useCompalintsStats } from "@/src/features/dashboard/hooks/useComplaintsStats";
 import { useResidentsCount } from "@/src/features/dashboard/hooks/useResidentsCount";
-import { AddNotificationModal } from "@/src/features/notifications/components/AddNotificationModal";
 import NotificationsCarousel from "@/src/features/notifications/components/NotificationsCarousel";
 import { router } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -41,7 +40,7 @@ export default function HomeScreen() {
 
 					<View className="bg-white p-4 rounded-2xl w-[48%] shadow-sm">
 						<Pressable onPress={() => router.push("/(tabs)/complaints")}>
-							<Text className="text-gray-500 font-semibold">Plaintes</Text>
+							<Text className="text-gray-500 font-semibold">Réclamations</Text>
 							<View className="flex flex-row gap-2 items-center">
 								<Text className="text-md font-bold mt-1 text-yellow-500">
 									{
@@ -77,7 +76,7 @@ export default function HomeScreen() {
 					<View className="bg-white p-4 rounded-2xl shadow-sm">
 						<Pressable onPress={() => router.push("/(tabs)/complaints")}>
 							<Text className="text-blue-600 font-semibold">
-								+ Ajouter Une Plainte
+								+ Ajouter Une Réclamation
 							</Text>
 							<Text className="text-gray-500 mt-1">
 								Rapporter un nouveau probleme dans la residence
@@ -87,7 +86,6 @@ export default function HomeScreen() {
 					</View>
 					<CotisationBtn />
 					<BudgetModal />
-					<AddNotificationModal />
 				</View>
 				{/* Notifications */}
 				<NotificationsCarousel />

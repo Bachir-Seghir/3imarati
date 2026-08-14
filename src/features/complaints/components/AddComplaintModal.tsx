@@ -49,11 +49,11 @@ export const AddComplaintModal = ({ user, profile }: Props) => {
 		<>
 			<Pressable
 				onPress={() => setModalVisible(true)}
-				className="absolute bottom-6 right-6 bg-blue-600 p-4 rounded-full"
+				className="absolute -bottom-9 right-6 bg-blue-600 p-4 rounded-full"
 			>
 				<Ionicons
 					name="add"
-					size={24}
+					size={20}
 					color="white"
 				/>
 			</Pressable>
@@ -66,7 +66,7 @@ export const AddComplaintModal = ({ user, profile }: Props) => {
 			>
 				<SafeAreaView className="flex-1 bg-white">
 					<View className="flex-1 justify-center p-5">
-						<Text className="text-xl font-bold mb-4">Nouveau Plainte</Text>
+						<Text className="text-xl font-bold mb-4">Nouveau Réclamation</Text>
 
 						<TextInput
 							placeholder="Title"

@@ -16,9 +16,11 @@ export const PaymentCard = ({ payment, canManage, onPay }: any) => {
 			{!payment.paid && canManage && (
 				<Pressable
 					onPress={() => onPay(payment.id)}
-					className="bg-green-600 p-2 mt-2 rounded"
+					className="bg-green-600 p-2 mt-2 mx-auto rounded w-[60%]"
 				>
-					<Text className="text-white text-center">Mark as Paid</Text>
+					<Text className="text-white text-center font-semibold">
+						Paiment effectué
+					</Text>
 				</Pressable>
 			)}
 		</View>

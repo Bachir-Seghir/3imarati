@@ -2,6 +2,7 @@ import { BudgetSection } from "@/src/components/BudgetSection";
 import Screen from "@/src/components/Screen";
 import { UsersList } from "@/src/components/UsersList";
 import { useAuth } from "@/src/features/auth/context/AuthContext";
+import { AddNotificationModal } from "@/src/features/notifications/components/AddNotificationModal";
 import { createMonthlyPayment } from "@/src/features/payments/services/payment.service";
 import { db } from "@/src/services/firebase";
 import { Redirect, router } from "expo-router";
@@ -33,7 +34,12 @@ export default function AdminScreen() {
 
 	return (
 		<Screen>
-			<ScrollView className="p-4">
+			<ScrollView
+				className="flex-1 px-4"
+				contentContainerStyle={{
+					paddingBottom: 180,
+				}}
+			>
 				<Text className="text-2xl text-center font-bold text-gray-800 mb-4">
 					{profile?.role === "admin" ? "Administrateur" : "Manageur du Budget"}
 				</Text>
@@ -63,6 +69,7 @@ export default function AdminScreen() {
 							Passer au page des payments
 						</Text>
 					</Pressable>
+					<AddNotificationModal />
 				</View>
 				<Text className="text-2xl text-center font-bold text-gray-800 my-4">
 					Volet de Management

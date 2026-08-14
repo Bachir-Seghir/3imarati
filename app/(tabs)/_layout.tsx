@@ -61,7 +61,7 @@ export default function TabsLayout() {
 			<Tabs.Screen
 				name="complaints"
 				options={{
-					title: "Plaintes",
+					title: "Réclamations",
 					tabBarIcon: ({ color, size }) => (
 						<Ionicons
 							name="chatbubble-outline"
