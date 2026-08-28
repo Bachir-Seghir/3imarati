@@ -31,12 +31,14 @@ export const CotisationBtn = () => {
 	};
 
 	return (
-		<View className="bg-white p-4 rounded-2xl shadow-sm">
+		<View className="w-[38%] bg-white p-4 rounded-2xl shadow-sm">
 			<Pressable
 				onPress={() => setModalVisible(true)}
 				className="w-full"
 			>
-				<Text className="text-green-600 font-semibold">Cotiser</Text>
+				<Text className="text-green-600 text-md font-semibold text-center">
+					Cotiser
+				</Text>
 			</Pressable>
 			<Modal
 				visible={modalVisible}

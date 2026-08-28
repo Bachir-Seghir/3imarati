@@ -84,7 +84,7 @@ export default function ResidentsPhoneModal() {
 			{/* Main screen button */}
 			<Pressable
 				onPress={() => setVisible(true)}
-				className="bg-green-600 rounded-2xl p-3 flex-row items-center justify-center"
+				className="bg-green-600 rounded-2xl p-3 flex-row items-center justify-center w-[100%]"
 			>
 				<Ionicons
 					name="people-outline"
@@ -92,7 +92,7 @@ export default function ResidentsPhoneModal() {
 					color="white"
 				/>
 
-				<Text className="text-white font-bold text-xl ml-2">
+				<Text className="text-white font-bold text-md ml-2">
 					Annuaire des résidents
 				</Text>
 			</Pressable>

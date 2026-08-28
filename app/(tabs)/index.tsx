@@ -71,14 +71,11 @@ export default function HomeScreen() {
 				<Text className="mt-8 mb-3 text-gray-700 font-semibold">
 					Actions Rapides
 				</Text>
-				<View className="flex gap-y-2">
-					<View className="bg-white p-4 rounded-2xl shadow-sm">
+				<View className="flex flex-row gap-2 flex-wrap">
+					<View className="w-[60%] bg-white p-4 rounded-2xl shadow-sm">
 						<Pressable onPress={() => router.push("/(tabs)/complaints")}>
 							<Text className="text-blue-600 font-semibold">
 								+ Ajouter Une Réclamation
-							</Text>
-							<Text className="text-gray-500 mt-1">
-								Rapporter un nouveau probleme dans la residence
 							</Text>
 						</Pressable>
 						{/* ➕ Floating button */}
