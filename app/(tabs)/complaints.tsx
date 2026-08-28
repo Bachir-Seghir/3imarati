@@ -60,6 +60,17 @@ export default function ComplaintsScreen() {
 			updatedAt: serverTimestamp(),
 		});
 	};
+	const handleReleaseComplaint = async (complaint: any) => {
+		if (complaint.assignedToId !== user?.uid) return;
+
+		await updateDoc(doc(db, "complaints", complaint.id), {
+			status: "En_Attente",
+			assignedToId: null,
+			assignedToName: null,
+			assignedAt: null,
+			updatedAt: serverTimestamp(),
+		});
+	};
 	return (
 		<Screen>
 			<ScrollView
@@ -76,6 +87,8 @@ export default function ComplaintsScreen() {
 					onFilter={setFilteredComplaints}
 					onActiveChange={setFilterActive}
 					highlight={filterActive}
+					currentUserId={user?.uid}
+					currentUserName={profile?.fullName}
 				/>
 
 				{filteredComplaints.map((item) => (
@@ -157,6 +170,18 @@ export default function ComplaintsScreen() {
 									</Text>
 								</Pressable>
 							)}
+
+							{item.status === "En_Traitement" &&
+								item.assignedToId === user?.uid && (
+									<Pressable
+										className="bg-gray-500 mt-3 p-2 rounded-md"
+										onPress={() => handleReleaseComplaint(item)}
+									>
+										<Text className="text-white text-center font-semibold">
+											Ne pas prendre en charge
+										</Text>
+									</Pressable>
+								)}
 						</View>
 					</View>
 				))}

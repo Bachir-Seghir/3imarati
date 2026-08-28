@@ -1,11 +1,25 @@
 export type Payment = {
-    id?: string;
+    id: string;
+
     userId: string;
-    month: string;
-    amount: number;
-    paid: boolean;
+
     fullName: string;
-    floor: string;
-    door: string;
-    paidAt: any | null;
+
+    floor: number;
+
+    door: number;
+
+    month: string;
+
+    amount: number;
+
+    paid: boolean;
+
+    paidAt: any;
+
+    createdAt?: any;
+
+    updatedAt?: any;
+
+    paymentType?: "monthly" | "advance";
 };

@@ -1,7 +1,8 @@
 export type UserProfile = {
     email: string;
     fullName: string;
-    role: "resident" | "admin";
+    phone: string;
+    role: "resident" | "admin" | "budgetManager";
     floor: number;
     door: number;
     identityImage: string | null;

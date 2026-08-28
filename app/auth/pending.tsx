@@ -10,7 +10,7 @@ export default function PendingScreen() {
 
 	const handleLogout = async () => {
 		await signOut(auth);
-		router.replace("/");
+		router.replace("/(tabs)");
 	};
 
 	useEffect(() => {

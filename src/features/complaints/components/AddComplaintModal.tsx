@@ -66,7 +66,7 @@ export const AddComplaintModal = ({ user, profile }: Props) => {
 			>
 				<SafeAreaView className="flex-1 bg-white">
 					<View className="flex-1 justify-center p-5">
-						<Text className="text-xl font-bold mb-4">Nouveau Réclamation</Text>
+						<Text className="text-xl font-bold mb-4">Nouvelle Réclamation</Text>
 
 						<TextInput
 							placeholder="Title"

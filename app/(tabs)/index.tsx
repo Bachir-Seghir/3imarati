@@ -1,5 +1,6 @@
 import { BudgetModal } from "@/src/components/BudgetModal";
 import { CotisationBtn } from "@/src/components/CotisationBtn";
+import ResidentsPhoneModal from "@/src/components/ResidentsPhoneModal";
 import Screen from "@/src/components/Screen";
 import { useBudget } from "@/src/features/dashboard/hooks/useBudget";
 import { useCompalintsStats } from "@/src/features/dashboard/hooks/useComplaintsStats";
@@ -29,11 +30,9 @@ export default function HomeScreen() {
 							<Text className="text-xl font-bold mt-1">{residents} / 72</Text>
 						</View>
 						<View className="bg-white p-4 rounded-2xl shadow-sm">
-							<Text className="text-gray-500 font-semibold">
-								Solde Caisse Noire
-							</Text>
+							<Text className="text-gray-500 font-semibold">Solde Caisse</Text>
 							<Text className="text-xl font-bold mt-1 text-orange-600">
-								{budget}
+								{budget} DA
 							</Text>
 						</View>
 					</View>
@@ -86,6 +85,7 @@ export default function HomeScreen() {
 					</View>
 					<CotisationBtn />
 					<BudgetModal />
+					<ResidentsPhoneModal />
 				</View>
 				{/* Notifications */}
 				<NotificationsCarousel />

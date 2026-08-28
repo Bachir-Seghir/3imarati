@@ -14,11 +14,42 @@ export default function RegisterScreen() {
 	const [fullName, setFullName] = useState("");
 	const [floor, setFloor] = useState("");
 	const [door, setDoor] = useState("");
-	const [image, setImage] = useState<string | null>(null);
+	const [phone, setPhone] = useState("");
+	const [image, setImage] = useState<string>("");
 
+	const takePhoto = async () => {
+		// 🔐 permission for camera
+		const permission = await ImagePicker.requestCameraPermissionsAsync();
+
+		if (!permission.granted) {
+			alert("Permission caméra refusée");
+			return;
+		}
+
+		// 📸 open camera
+		const result = await ImagePicker.launchCameraAsync({
+			allowsEditing: true,
+			quality: 0.7,
+		});
+
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+		}
+	};
+
+	// 📸 Pick image
 	const pickImage = async () => {
+		// 🔐 Ask permission
+		const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+		if (!permission.granted) {
+			alert("Permission d'accès aux photos refusée");
+			return;
+		}
+
 		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			mediaTypes: "images", // ✅ new API
+			allowsEditing: true,
 			quality: 0.7,
 		});
 
@@ -28,7 +59,21 @@ export default function RegisterScreen() {
 	};
 
 	const handleRegister = async () => {
-		if (!email || !password || !image) return;
+		if (
+			!email ||
+			!fullName ||
+			!password ||
+			!phone ||
+			!floor ||
+			!door ||
+			!image
+		) {
+			alert(
+				"il Faut emplire toutes les cases et inserer une photo d'identité ",
+			);
+
+			return;
+		}
 
 		try {
 			// 1. Create user
@@ -48,7 +93,8 @@ export default function RegisterScreen() {
 				email,
 				fullName,
 				floor: Number(floor),
-				door: Number(floor),
+				door: Number(door),
+				phone,
 				identityImage: imageUrl,
 				role: "resident",
 				approved: false,
@@ -63,68 +109,94 @@ export default function RegisterScreen() {
 
 	return (
 		<Screen>
-			<View className="flex-1 p-4 bg-white justify-center">
-				<Text className="text-xl font-bold mb-4">Create Account</Text>
+			<View className="mt-4 p-4  justify-center">
+				<Text className="text-3xl mx-auto font-bold mb-4">
+					Créer un nouveau compte
+				</Text>
 
 				<TextInput
 					placeholder="Email"
 					className="border p-3 rounded-md mb-3"
 					onChangeText={setEmail}
 				/>
+				<TextInput
+					placeholder="0770xxx"
+					keyboardType="phone-pad"
+					className="border p-3 rounded-md mb-3"
+					onChangeText={setPhone}
+				/>
 
 				<TextInput
-					placeholder="Password"
+					placeholder="Mot de Pass"
 					secureTextEntry
 					className="border p-3 rounded-md mb-3"
 					onChangeText={setPassword}
 				/>
 
 				<TextInput
-					placeholder="Full Name"
+					placeholder="Nom & Prénom"
 					className="border p-3 rounded-md mb-3"
 					onChangeText={setFullName}
 				/>
 
 				<TextInput
-					placeholder="Floor"
+					placeholder="Étage Ex: 3"
 					keyboardType="numeric"
 					className="border p-3 rounded-md mb-3"
 					onChangeText={setFloor}
 				/>
 
 				<TextInput
-					placeholder="Door"
+					placeholder="Porte Ex: 5"
 					keyboardType="numeric"
 					className="border p-3 rounded-md mb-3"
 					onChangeText={setDoor}
 				/>
 
-				<Pressable
-					onPress={pickImage}
-					className="bg-gray-200 p-3 rounded-md mb-3"
-				>
-					<Text>Select Identity Card</Text>
-				</Pressable>
+				{/* Image picker */}
+				<Text className="font-semibold mb-2">
+					Photo du CIN d'acquéreur ou Locataire
+				</Text>
+				<View className="flex-row gap-2 mb-6">
+					<Pressable
+						onPress={takePhoto}
+						className="bg-blue-600 p-3 rounded-md flex-1"
+					>
+						<Text className="text-white text-center font-semibold">
+							Prendre photo
+						</Text>
+					</Pressable>
 
+					<Pressable
+						onPress={pickImage}
+						className="bg-gray-600 p-3 rounded-md flex-1"
+					>
+						<Text className="text-white text-center font-semibold">
+							Galerie
+						</Text>
+					</Pressable>
+				</View>
+
+				{/* Preview */}
 				{image && (
 					<Image
 						source={{ uri: image }}
-						className="h-32 mb-3 rounded"
+						className="w-full h-52 rounded-md mb-4"
+						resizeMode="cover"
 					/>
 				)}
-
 				<Pressable
 					onPress={handleRegister}
 					className="bg-blue-600 p-3 rounded"
 				>
-					<Text className="text-white text-center">Register</Text>
+					<Text className="text-white text-center">Inscrir</Text>
 				</Pressable>
 				<Link
 					href="/auth/login"
 					asChild
 				>
 					<Text className="text-blue-600 mt-4 text-center">
-						Already have an Account
+						J'ai déja un Compte
 					</Text>
 				</Link>
 			</View>

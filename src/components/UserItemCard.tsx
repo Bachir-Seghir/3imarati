@@ -58,6 +58,7 @@ export const UserItemCard = ({ user }: { user: UserItem }) => {
 			<Text>
 				Floor: {user.floor} | Door: {user.door}
 			</Text>
+			<Text>Num Tél: {user.phone}</Text>
 			<View className="flex flex-row gap-x-2 justify-between">
 				{user.identityImage && (
 					<Pressable

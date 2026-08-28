@@ -1,19 +1,15 @@
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { db } from "@/src/services/firebase";
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs, useRouter } from "expo-router";
+import { Redirect, Tabs, useRouter } from "expo-router";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 export default function TabsLayout() {
 	const { user, profile, loading } = useAuth();
 	const [pendingCount, setPendingCount] = useState(0);
 	const router = useRouter();
-	useEffect(() => {
-		if (!user) {
-			router.replace("/auth/login");
-		}
-	}, [user]);
 
 	const canManage =
 		profile?.role === "admin" || profile?.role === "budget_manager";
@@ -31,13 +27,43 @@ export default function TabsLayout() {
 
 		return () => unsub();
 	}, [canManage]);
+
+	// ⏳ AuthContext is still loading
+	if (loading) {
+		return (
+			<View className="flex-1 justify-center items-center">
+				<ActivityIndicator size="large" />
+			</View>
+		);
+	}
+
+	// 🔐 No authenticated user
+	if (!user) {
+		return <Redirect href="/auth/login" />;
+	}
+
+	// ⏳ User exists but profile hasn't been loaded yet
+	if (!profile) {
+		return (
+			<View className="flex-1 justify-center items-center">
+				<ActivityIndicator size="large" />
+			</View>
+		);
+	}
+
+	// 🚫 Profile loaded and user is not approved
+	if (!profile.approved) {
+		return <Redirect href="/auth/pending" />;
+	}
+
+	// ✅ Approved user
 	return (
 		<Tabs
 			screenOptions={{
 				headerShown: false,
 				tabBarActiveTintColor: "#eb7125",
 				tabBarStyle: {
-					height: 80,
+					height: 100,
 					paddingTop: 6,
 					paddingBottom: 6,
 					borderTopWidth: 0,

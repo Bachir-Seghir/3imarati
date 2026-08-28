@@ -3,44 +3,68 @@ import { UserProfile } from "@/src/types/user";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { getOrCreateUserProfile } from "../services/user.service";
 
 export function useAuthState() {
     const [user, setUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
+
     const [authLoading, setAuthLoading] = useState(true);
     const [profileLoading, setProfileLoading] = useState(false);
 
     useEffect(() => {
-        const unsubscribeAuth = onAuthStateChanged(auth, async (u) => {
+        let unsubscribeProfile: (() => void) | null = null;
+
+        const unsubscribeAuth = onAuthStateChanged(auth, (u) => {
             setUser(u);
             setProfile(null);
 
+            // No authenticated user
             if (!u) {
+                setProfileLoading(false);
                 setAuthLoading(false);
+
+                if (unsubscribeProfile) {
+                    unsubscribeProfile();
+                    unsubscribeProfile = null;
+                }
+
                 return;
             }
 
+            // User exists → listen to Firestore profile
             setProfileLoading(true);
-            await getOrCreateUserProfile({
-                uid: u.uid,
-                email: u.email
-            })
 
             const ref = doc(db, "users", u.uid);
 
+            unsubscribeProfile = onSnapshot(
+                ref,
+                (docSnap) => {
+                    if (docSnap.exists()) {
+                        setProfile(docSnap.data() as UserProfile);
+                    } else {
+                        // Profile hasn't been created yet
+                        setProfile(null);
+                    }
 
-            const unsubscribeDoc = onSnapshot(ref, (docSnap) => {
-                setProfile(docSnap.data() as UserProfile);
-                setProfileLoading(false);
-            });
+                    setProfileLoading(false);
+                },
+                (error) => {
+                    console.error("PROFILE ERROR:", error);
+                    setProfile(null);
+                    setProfileLoading(false);
+                },
+            );
 
             setAuthLoading(false);
-
-            return () => unsubscribeDoc();
         });
 
-        return () => unsubscribeAuth();
+        return () => {
+            unsubscribeAuth();
+
+            if (unsubscribeProfile) {
+                unsubscribeProfile();
+            }
+        };
     }, []);
 
     return {

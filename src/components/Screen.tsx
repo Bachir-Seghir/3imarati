@@ -7,7 +7,7 @@ export default function Screen({ children }: { children: ReactNode }) {
 	return (
 		<SafeAreaView
 			className="flex-1 bg-gray-200"
-			edges={["top", "bottom"]}
+			edges={["top"]}
 		>
 			<AppHeader />
 

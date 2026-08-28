@@ -37,7 +37,7 @@ export default function NotificationsCarousel() {
 
 	return (
 		<>
-			<View className="mt-[60px]">
+			<View className="mt-8">
 				<Text className="mb-1 mx-auto text-slate-700 font-semibold text-2xl">
 					Notifications
 				</Text>
