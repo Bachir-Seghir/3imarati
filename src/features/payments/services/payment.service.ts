@@ -117,9 +117,11 @@ export const createAdvancePayment = async (
         );
     }
 
-    // *Get user*
-    const userRef = doc(db, "users", userId);
+    // ======================================================
+    // GET USER
+    // ======================================================
 
+    const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
@@ -128,53 +130,117 @@ export const createAdvancePayment = async (
 
     const user = userSnap.data();
 
+    // ======================================================
+    // GET ALL USER PAYMENTS
+    // ======================================================
+
+    const paymentsQuery = query(
+        collection(db, "payments"),
+        where("userId", "==", userId),
+    );
+
+    const paymentsSnap = await getDocs(paymentsQuery);
+
+    // Map existing payments by month
+    const existingPayments = new Map<
+        string,
+        {
+            ref: typeof paymentsSnap.docs[number]["ref"];
+            paid: boolean;
+            amount: number;
+        }
+    >();
+
+    paymentsSnap.forEach((paymentDoc) => {
+        const data = paymentDoc.data();
+
+        existingPayments.set(data.month, {
+            ref: paymentDoc.ref,
+            paid: data.paid === true,
+            amount: data.amount ?? monthlyAmount,
+        });
+    });
+
+    // ======================================================
+    // FIND OLDEST UNPAID MONTH
+    // ======================================================
+
+    const unpaidMonths = Array.from(
+        existingPayments.entries(),
+    )
+        .filter(([_, payment]) => !payment.paid)
+        .map(([month]) => month)
+        .sort();
+
+    // ======================================================
+    // DETERMINE MONTHS TO PAY
+    // ======================================================
+
+    const monthsToProcess: string[] = [];
+
+    // ------------------------------------------------------
+    // 1. PAY OLDEST UNPAID MONTHS FIRST
+    // ------------------------------------------------------
+
+    for (const month of unpaidMonths) {
+        if (monthsToProcess.length >= numberOfMonths) {
+            break;
+        }
+
+        monthsToProcess.push(month);
+    }
+
+    // ------------------------------------------------------
+    // 2. IF WE STILL NEED MONTHS,
+    //    CONTINUE FROM CURRENT MONTH
+    // ------------------------------------------------------
+
     const today = new Date();
+
+    let futureMonthIndex = 0;
+
+    while (monthsToProcess.length < numberOfMonths) {
+        const date = addMonths(today, futureMonthIndex);
+        const month = getMonthString(date);
+
+        // Don't add a month that is already selected
+        if (!monthsToProcess.includes(month)) {
+            const existingPayment = existingPayments.get(month);
+
+            // If it doesn't exist, or exists but is unpaid,
+            // it can be processed.
+            if (!existingPayment || !existingPayment.paid) {
+                monthsToProcess.push(month);
+            }
+        }
+
+        futureMonthIndex++;
+    }
+
+    // ======================================================
+    // PROCESS MONTHS
+    // ======================================================
 
     let processedMonths = 0;
 
-    // *======================================================*
-    // *PROCESS EACH MONTH*
-    // *======================================================*
+    for (const month of monthsToProcess) {
+        const existingPayment = existingPayments.get(month);
 
-    for (let i = 0; i < numberOfMonths; i++) {
-        const date = addMonths(today, i);
+        // ==================================================
+        // EXISTING PAYMENT
+        // ==================================================
 
-        const month = getMonthString(date);
-
-        // *==========================================*
-        // *Check existing payment*
-        // *==========================================*
-
-        const q = query(
-            collection(db, "payments"),
-            where("userId", "==", userId),
-            where("month", "==", month),
-        );
-
-        const existing = await getDocs(q);
-
-        // *==========================================*
-        // *Payment already exists*
-        // *==========================================*
-
-        if (!existing.empty) {
-            const paymentDoc = existing.docs[0];
-
-            const payment = paymentDoc.data();
-
-            // *Already paid → don't touch it*
-            if (payment.paid === true) {
+        if (existingPayment) {
+            // Already paid → don't touch it
+            if (existingPayment.paid) {
                 continue;
             }
 
-            // *Existing unpaid payment → mark as paid*
-            await updateDoc(paymentDoc.ref, {
+            // Existing unpaid payment → mark as paid
+            await updateDoc(existingPayment.ref, {
                 paid: true,
-
                 paidAt: serverTimestamp(),
-
                 paymentType: "advance",
-
                 updatedAt: serverTimestamp(),
             });
 
@@ -185,29 +251,20 @@ export const createAdvancePayment = async (
             continue;
         }
 
-        // *==========================================*
-        // *Payment doesn't exist → create it*
-        // *==========================================*
+        // ==================================================
+        // PAYMENT DOESN'T EXIST → CREATE IT
+        // ==================================================
 
         await addDoc(collection(db, "payments"), {
             userId,
-
             month,
-
             amount: monthlyAmount,
-
             paid: true,
-
             paidAt: serverTimestamp(),
-
             fullName: user.fullName,
-
             floor: user.floor,
-
             door: user.door,
-
             createdAt: serverTimestamp(),
-
             paymentType: "advance",
         });
 
@@ -216,19 +273,18 @@ export const createAdvancePayment = async (
         processedMonths++;
     }
 
-    // *==========================================*
-    // *RESULT*
-    // *==========================================*
+    // ======================================================
+    // RESULT
+    // ======================================================
 
     return {
         processedMonths,
-
-        totalAmount:
-            processedMonths * monthlyAmount,
-
+        totalAmount: processedMonths * monthlyAmount,
         monthlyAmount,
+        months: monthsToProcess,
     };
 };
+
 
 // *======================================================*
 // *MARK PAYMENT AS PAID*

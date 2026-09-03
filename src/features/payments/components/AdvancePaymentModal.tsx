@@ -418,39 +418,6 @@ export default function AdvancePaymentModal({
 						</View>
 
 						{/* ================================= */}
-						{/* MONTHS COVERED */}
-						{/* ================================= */}
-
-						<View className="mb-5">
-							<Text className="font-bold text-gray-800 text-lg mb-3">
-								Mois couverts
-							</Text>
-
-							{months.map((date) => (
-								<View
-									key={getMonthString(date)}
-									className="flex-row items-center bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2"
-								>
-									<View className="bg-green-500 rounded-full w-8 h-8 items-center justify-center">
-										<Ionicons
-											name="checkmark"
-											size={18}
-											color="white"
-										/>
-									</View>
-
-									<Text className="ml-3 text-gray-700 font-semibold capitalize flex-1">
-										{formatMonth(date)}
-									</Text>
-
-									<Text className="text-gray-600">
-										{monthlyAmount.toLocaleString("fr-FR")} DA
-									</Text>
-								</View>
-							))}
-						</View>
-
-						{/* ================================= */}
 						{/* TOTAL */}
 						{/* ================================= */}
 
