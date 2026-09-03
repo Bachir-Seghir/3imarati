@@ -8,6 +8,7 @@ import {
 	updateMonthlyAmount,
 } from "@/src/features/payments/services/paymentsSettings.service";
 import { db } from "@/src/services/firebase";
+import { getDashboardTitle, hasAnyRole } from "@/src/utils/RolesCheck";
 import { router } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -70,7 +71,7 @@ export default function AdminScreen() {
 				}}
 			>
 				<Text className="text-2xl text-center font-bold text-gray-800 mb-8">
-					{profile?.role === "admin" ? "Administrateur" : "Manageur du Budget"}
+					{getDashboardTitle(profile)}
 				</Text>
 
 				<View className="flex-row flex-wrap gap-2">
@@ -84,68 +85,93 @@ export default function AdminScreen() {
 							onChangeText={setMonthlyAmount}
 							keyboardType="numeric"
 							placeholder="Montant"
-							className="border border-gray-300 bg-white rounded-lg p-3"
+							className="w-[70px] border border-gray-300 bg-white rounded-lg p-3 font-semibold"
 						/>
 
 						<Pressable
 							onPress={handleSaveMonthlyAmount}
 							disabled={savingAmount}
-							className="bg-blue-600 rounded-lg p-3 ml-auto"
+							className="bg-teal-700 rounded-md p-3 ml-auto"
 						>
 							<Text className="text-white text-center font-bold">
 								{savingAmount ? "Enregistrement..." : "Enregistrer"}
 							</Text>
 						</Pressable>
 					</View>
-					<Pressable
-						onPress={generateMonthlyPayments}
-						className="w-[48%] rounded-md bg-orange-500 py-3 px-4 mb-3"
-					>
-						<Text className="text-lg font-bold text-white text-center">
-							Generer les Paiments mensuels
-						</Text>
-					</Pressable>
+
 					<Pressable
 						onPress={() => router.push("/admin/notifications")}
-						className="w-[48%] rounded-md bg-green-500 py-3 px-4 mb-3"
+						className="w-[48%] rounded-md bg-teal-700 py-3 px-4 mb-3"
 					>
 						<Text className="text-lg font-bold text-white text-center">
 							Gérer les Notifications
 						</Text>
 					</Pressable>
-					<Pressable
-						onPress={() => router.push("/(tabs)/payments")}
-						className="w-[48%] rounded-md bg-sky-500 py-3 px-4 mb-3"
-					>
-						<Text className="text-lg font-bold text-white text-center">
-							Passer au page des payments
-						</Text>
-					</Pressable>
+
 					<Pressable
 						onPress={() => router.push("/admin/users")}
-						className="w-[48%] rounded-md bg-sky-500 py-3 px-4 mb-3"
+						className="w-[48%] rounded-md bg-teal-700 py-3 px-4 mb-3"
 					>
 						<Text className="text-lg font-bold text-white text-center">
 							Gérer les Utilisateurs
 						</Text>
 					</Pressable>
-					<Pressable
-						onPress={() => setAdvancePaymentVisible(true)}
-						className="w-[48%] rounded-md bg-purple-600 py-3 px-4 mb-3"
-					>
-						<Text className="text-lg font-bold text-white text-center">
-							Paiement anticipé
-						</Text>
-					</Pressable>
+
+					{hasAnyRole(profile, ["superAdmin"]) && (
+						<Pressable
+							onPress={() => router.push("/admin/roles")}
+							className="w-[48%] rounded-md bg-teal-700 py-3 px-4 mb-3"
+						>
+							<Text className="text-lg font-bold text-white text-center">
+								Gérer les rôles
+							</Text>
+						</Pressable>
+					)}
 					<AddNotificationModal />
 
 					<AdvancePaymentModal
 						visible={advancePaymentVisible}
 						onClose={() => setAdvancePaymentVisible(false)}
-						onSuccess={() => {
-							// optional refresh
-						}}
 					/>
+					{hasAnyRole(profile, ["superAdmin", "budgetManager"]) && (
+						<>
+							<Text className="text-2xl font-bold text-black text-center mt-6 mb-2">
+								Gestion du Budget / Caisse
+							</Text>
+							<Pressable
+								onPress={() => router.push("/admin/budget")}
+								className="w-[48%] rounded-md bg-green-600 py-3 px-4 mb-3"
+							>
+								<Text className="text-lg font-bold text-white text-center">
+									Passer au page du Budget
+								</Text>
+							</Pressable>
+							<Pressable
+								onPress={() => router.push("/(tabs)/payments")}
+								className="w-[48%] rounded-md bg-green-600 py-3 px-4 mb-3"
+							>
+								<Text className="text-lg font-bold text-white text-center">
+									Passer au page des payments
+								</Text>
+							</Pressable>
+							<Pressable
+								onPress={() => setAdvancePaymentVisible(true)}
+								className="w-[48%] rounded-md bg-green-600 py-3 px-4 mb-3"
+							>
+								<Text className="text-lg font-bold text-white text-center">
+									Paiement anticipé
+								</Text>
+							</Pressable>
+							<Pressable
+								onPress={generateMonthlyPayments}
+								className="w-[48%] rounded-md bg-green-600 py-3 px-4 mb-3"
+							>
+								<Text className="text-lg font-bold text-white text-center">
+									Déclancher les Paiments mensuels
+								</Text>
+							</Pressable>
+						</>
+					)}
 				</View>
 			</ScrollView>
 		</Screen>

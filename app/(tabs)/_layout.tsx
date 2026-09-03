@@ -1,7 +1,8 @@
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { db } from "@/src/services/firebase";
+import { hasAnyRole } from "@/src/utils/RolesCheck";
 import { Ionicons } from "@expo/vector-icons";
-import { Redirect, Tabs, useRouter } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -9,11 +10,8 @@ import { ActivityIndicator, View } from "react-native";
 export default function TabsLayout() {
 	const { user, profile, loading } = useAuth();
 	const [pendingCount, setPendingCount] = useState(0);
-	const router = useRouter();
 
-	const canManage =
-		profile?.role === "admin" || profile?.role === "budget_manager";
-
+	const canManage = hasAnyRole(profile, ["admin", "superAdmin"]);
 	useEffect(() => {
 		if (!canManage) return;
 

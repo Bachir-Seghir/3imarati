@@ -28,7 +28,7 @@ export default function RegisterScreen() {
 
 		// 📸 open camera
 		const result = await ImagePicker.launchCameraAsync({
-			allowsEditing: true,
+			allowsEditing: false,
 			quality: 0.7,
 		});
 
@@ -49,7 +49,7 @@ export default function RegisterScreen() {
 
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: "images", // ✅ new API
-			allowsEditing: true,
+			allowsEditing: false,
 			quality: 0.7,
 		});
 
@@ -96,7 +96,7 @@ export default function RegisterScreen() {
 				door: Number(door),
 				phone,
 				identityImage: imageUrl,
-				role: "resident",
+				roles: ["resident"],
 				approved: false,
 				createdAt: serverTimestamp(),
 			});

@@ -97,9 +97,7 @@ export default function AdvancePaymentModal({
 						id: doc.id,
 						...doc.data(),
 					}))
-					.filter(
-						(user: any) => user.role === "resident" && user.approved === true,
-					) as Resident[];
+					.filter((user: any) => user.approved === true) as Resident[];
 
 				setResidents(data);
 			} catch (error) {

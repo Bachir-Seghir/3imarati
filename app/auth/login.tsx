@@ -1,6 +1,5 @@
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { login } from "@/src/features/auth/services/auth.service";
-import { getAuthErrorMessage } from "@/src/utils/authErrors";
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -24,10 +23,22 @@ export default function LoginScreen() {
 		setLoading(true);
 		try {
 			await login(email, password);
-		} catch (e: any) {
+		} catch (error: any) {
+			console.log("LOGIN ERROR:", error);
 			setLoading(false);
-			console.log("Login error:", e);
-			setError(getAuthErrorMessage(e));
+			if (
+				error.code === "auth/invalid-credential" ||
+				error.code === "auth/wrong-password" ||
+				error.code === "auth/user-not-found"
+			) {
+				setError("Email ou mot de passe incorrect.");
+			} else if (error.code === "auth/too-many-requests") {
+				setError("Trop de tentatives. Veuillez patienter quelques minutes.");
+			} else if (error.code === "auth/network-request-failed") {
+				setError("Problème de connexion Internet.");
+			} else {
+				setError("Une erreur est survenue. Veuillez réessayer.");
+			}
 		}
 	};
 	useEffect(() => {

@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 import { useAuth } from "../features/auth/context/AuthContext";
+import { hasAnyRole } from "../utils/RolesCheck";
 
 export default function AppHeader() {
 	const { profile } = useAuth();
@@ -24,7 +25,7 @@ export default function AppHeader() {
 						color="#ececec"
 					/>
 				</Pressable>
-				{profile?.role === "admin" && (
+				{hasAnyRole(profile, ["superAdmin", "admin", "budgetManager"]) && (
 					<Pressable
 						onPress={() => router.push("/admin")}
 						className="flex flex-row gap-1 px-6 py-2 items-center"

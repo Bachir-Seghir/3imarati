@@ -41,7 +41,7 @@ const BudgetSection = () => {
 
 		// 📸 open camera
 		const result = await ImagePicker.launchCameraAsync({
-			allowsEditing: true,
+			allowsEditing: false,
 			quality: 0.7,
 		});
 
@@ -62,7 +62,7 @@ const BudgetSection = () => {
 
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: "images", // ✅ new API
-			allowsEditing: true,
+			allowsEditing: false,
 			quality: 0.7,
 		});
 

@@ -40,7 +40,6 @@ export default function ResidentsPhoneModal() {
 
 		const q = query(
 			collection(db, "users"),
-			where("role", "==", "resident"),
 			where("approved", "==", true),
 			orderBy("fullName", "asc"),
 		);

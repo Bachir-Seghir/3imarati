@@ -15,6 +15,7 @@ import {
 } from "@/src/features/payments/services/cotisation.service";
 
 import { markPaymentAsPaid } from "@/src/features/payments/services/payment.service";
+import { hasAnyRole } from "@/src/utils/RolesCheck";
 
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -40,8 +41,7 @@ export default function PaymentsScreen() {
 		"monthly",
 	);
 
-	const canManage =
-		profile?.role === "admin" || profile?.role === "budget_manager";
+	const canManage = hasAnyRole(profile, ["superAdmin", "budgetManager"]);
 
 	// ======================================================
 	// FILTER PAYMENTS BY SELECTED MONTH
