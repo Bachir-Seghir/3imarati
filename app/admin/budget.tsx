@@ -15,6 +15,7 @@ import { useState } from "react";
 import {
 	ActivityIndicator,
 	Image,
+	Platform,
 	Pressable,
 	ScrollView,
 	Text,
@@ -132,7 +133,11 @@ const BudgetSection = () => {
 		<Screen>
 			<ScrollView
 				className="flex-1 h-full px-4"
-				contentContainerStyle={{ flexGrow: 1 }}
+				contentContainerStyle={{
+					paddingBottom: Platform.OS === "ios" ? 60 : 100,
+					gap: 20,
+					flexGrow: 1,
+				}}
 			>
 				<Text className="text-2xl font-bold mb-5 mx-auto text-slate-800">
 					Gestion du Budget
