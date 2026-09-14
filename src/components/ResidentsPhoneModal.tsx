@@ -7,7 +7,7 @@ import {
 	query,
 	where,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
 	ActivityIndicator,
 	Linking,
@@ -15,6 +15,7 @@ import {
 	Pressable,
 	ScrollView,
 	Text,
+	TextInput,
 	View,
 } from "react-native";
 
@@ -32,6 +33,10 @@ export default function ResidentsPhoneModal() {
 	const [visible, setVisible] = useState(false);
 	const [residents, setResidents] = useState<Resident[]>([]);
 	const [loading, setLoading] = useState(false);
+
+	// Filters
+	const [searchName, setSearchName] = useState("");
+	const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
 
 	useEffect(() => {
 		if (!visible) return;
@@ -64,6 +69,33 @@ export default function ResidentsPhoneModal() {
 		return unsubscribe;
 	}, [visible]);
 
+	// Get available floors
+	const floors = useMemo(() => {
+		return [
+			...new Set(
+				residents
+					.map((resident) => resident.floor)
+					.filter((floor): floor is number => floor !== undefined),
+			),
+		].sort((a, b) => a - b);
+	}, [residents]);
+	// Filter residents
+	const filteredResidents = useMemo(() => {
+		const search = searchName.trim().toLowerCase();
+		return residents.filter((resident) => {
+			const matchesName =
+				!search || resident.fullName?.toLowerCase().includes(search);
+			const matchesFloor =
+				selectedFloor === null || resident.floor === selectedFloor;
+			return matchesName && matchesFloor;
+		});
+	}, [residents, searchName, selectedFloor]);
+
+	const resetFilters = () => {
+		setSearchName("");
+		setSelectedFloor(null);
+	};
+
 	const callResident = async (phone?: string) => {
 		if (!phone) {
 			alert("Numéro de téléphone indisponible.");
@@ -83,16 +115,16 @@ export default function ResidentsPhoneModal() {
 			{/* Main screen button */}
 			<Pressable
 				onPress={() => setVisible(true)}
-				className="bg-green-600 rounded-2xl p-3 flex-row items-center justify-center w-[100%]"
+				className="bg-green-600 rounded-md p-3 flex-row items-center justify-center"
 			>
 				<Ionicons
-					name="people-outline"
+					name="call-outline"
 					size={26}
 					color="white"
 				/>
 
 				<Text className="text-white font-bold text-md ml-2">
-					Annuaire des résidents
+					Annuaire Télephonique
 				</Text>
 			</Pressable>
 
@@ -103,8 +135,8 @@ export default function ResidentsPhoneModal() {
 				animationType="slide"
 				onRequestClose={() => setVisible(false)}
 			>
-				<View className="flex-1 bg-black/40 justify-end">
-					<View className="bg-white rounded-t-3xl max-h-[90%]">
+				<View className="flex-1 bg-white pt-14">
+					<View className="bg-white flex-1">
 						{/* Header */}
 						<View className="flex-row items-center justify-between p-5 border-b border-gray-200">
 							<View>
@@ -128,7 +160,82 @@ export default function ResidentsPhoneModal() {
 								/>
 							</Pressable>
 						</View>
-
+						{/* Filters */}
+						{!loading && residents.length > 0 && (
+							<View className="px-4">
+								{/* Search by name */}
+								<View className="flex-row items-center bg-gray-100 rounded-xl px-3 h-12">
+									<Ionicons
+										name="search-outline"
+										size={21}
+										color="#6b7280"
+									/>
+									<TextInput
+										value={searchName}
+										onChangeText={setSearchName}
+										placeholder="Rechercher par nom..."
+										placeholderTextColor="#9ca3af"
+										className="flex-1 ml-2 text-gray-800"
+										autoCapitalize="none"
+									/>
+									{searchName.length > 0 && (
+										<Pressable onPress={() => setSearchName("")}>
+											<Ionicons
+												name="close-circle"
+												size={20}
+												color="#9ca3af"
+											/>
+										</Pressable>
+									)}
+								</View>
+								{/* Floor filter */}
+								<ScrollView
+									horizontal
+									showsHorizontalScrollIndicator={false}
+									className="mt-3"
+									contentContainerStyle={{ gap: 8 }}
+								>
+									{/* All floors */}
+									<Pressable
+										onPress={() => setSelectedFloor(null)}
+										className={`px-4 py-2.5 rounded-full ${selectedFloor === null ? "bg-blue-500" : "bg-gray-100"}`}
+									>
+										<Text
+											className={`font-semibold ${selectedFloor === null ? "text-white" : "text-gray-700"}`}
+										>
+											Tous
+										</Text>
+									</Pressable>
+									{floors.map((floor) => (
+										<Pressable
+											key={floor}
+											onPress={() => setSelectedFloor(floor)}
+											className={`px-4 py-2.5 rounded-full ${selectedFloor === floor ? "bg-blue-500" : "bg-gray-100"}`}
+										>
+											<Text
+												className={`font-semibold ${selectedFloor === floor ? "text-white" : "text-gray-700"}`}
+											>
+												Étage {floor}
+											</Text>
+										</Pressable>
+									))}
+								</ScrollView>
+								{/* Result count + reset */}
+								<View className="flex-row items-center justify-between mt-3 mb-1">
+									<Text className="text-gray-500">
+										{filteredResidents.length} résident
+										{filteredResidents.length !== 1 ? "s" : ""}
+									</Text>
+									{(searchName || selectedFloor !== null) && (
+										<Pressable onPress={resetFilters}>
+											<Text className="text-blue-600 font-semibold">
+												Réinitialiser
+											</Text>
+										</Pressable>
+									)}
+								</View>
+							</View>
+						)}
 						{/* Content */}
 						{loading ? (
 							<View className="py-10 items-center">

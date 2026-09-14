@@ -230,15 +230,13 @@ export default function ProfileScreen() {
 				}}
 				showsVerticalScrollIndicator={false}
 			>
-				<View className="p-4">
+				<View className="p-0">
 					{/* ================================= */}
 					{/* HEADER */}
 					{/* ================================= */}
 
 					<View className="flex-row justify-between items-center mb-6">
-						<Text className="text-2xl font-bold text-slate-800">
-							Mon Compte
-						</Text>
+						<Text className="text-xl font-bold text-slate-800">Mon Compte</Text>
 
 						<Pressable
 							onPress={handleLogout}
@@ -258,8 +256,8 @@ export default function ProfileScreen() {
 					{/* PROFILE INFORMATION */}
 					{/* ================================= */}
 
-					<View className="bg-white rounded-2xl p-5 mb-6">
-						<Text className="text-xl font-bold text-gray-800 mb-5">
+					<View className="bg-white rounded-2xl p-5 mb-4">
+						<Text className="text-lg font-bold text-gray-800 mb-2">
 							Informations personnelles
 						</Text>
 

@@ -2,91 +2,169 @@ import { BudgetModal } from "@/src/components/BudgetModal";
 import { CotisationBtn } from "@/src/components/CotisationBtn";
 import ResidentsPhoneModal from "@/src/components/ResidentsPhoneModal";
 import Screen from "@/src/components/Screen";
+import { AddComplaintModal } from "@/src/features/complaints/components/AddComplaintModal";
+
 import { useBudget } from "@/src/features/dashboard/hooks/useBudget";
 import { useCompalintsStats } from "@/src/features/dashboard/hooks/useComplaintsStats";
 import { useResidentsCount } from "@/src/features/dashboard/hooks/useResidentsCount";
+
 import NotificationsCarousel from "@/src/features/notifications/components/NotificationsCarousel";
+
 import { router } from "expo-router";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function HomeScreen() {
 	const budget = useBudget();
 	const residents = useResidentsCount();
 	const complaints = useCompalintsStats();
 
+	const inProgress = complaints.filter(
+		(c) => c.status === "En_Traitement",
+	).length;
+
+	const pending = complaints.filter((c) => c.status === "En_Attente").length;
+
+	const resolved = complaints.filter((c) => c.status === "Résolue").length;
+
 	return (
 		<Screen>
-			<ScrollView
-				className="flex-1 h-full px-2"
-				contentContainerStyle={{ flexGrow: 1 }}
-			>
-				{/* Stats Cards */}
-				<View className="flex-row justify-between flex-wrap gap-4">
-					<View className="w-[48%] gap-y-2">
-						<View className="bg-white p-4 rounded-2xl shadow-sm">
-							<Text className="text-gray-500 font-semibold">
+			<View className="flex-1 px-2">
+				{/* ================================================= */}
+				{/* STATS */}
+				{/* ================================================= */}
+				<View>
+					<Text className="mb-2 text-gray-900 text-lg font-bold">
+						Informations Générales
+					</Text>
+				</View>
+				<View className="flex-row gap-3 flex-[1.5]">
+					{/* LEFT COLUMN */}
+
+					<View className="flex-1 gap-2">
+						{/* Residents */}
+						<View className="flex-1 bg-white px-3 rounded-md shadow-sm justify-center">
+							<Text className="text-gray-500 font-semibold text-lg">
 								Résidents Inscrits
 							</Text>
-							<Text className="text-xl font-bold mt-1">{residents} / 72</Text>
+
+							<Text className="flex-md text-2xl font-bold mt-1">
+								{residents} / 72
+							</Text>
 						</View>
-						<View className="bg-white p-4 rounded-2xl shadow-sm">
-							<Text className="text-gray-500 font-semibold">Solde Caisse</Text>
-							<Text className="text-xl font-bold mt-1 text-orange-600">
+
+						{/* Budget */}
+						<View className="flex-1 bg-white px-3 rounded-md shadow-sm justify-center">
+							<Text className="text-gray-500 text-lg font-semibold">
+								Solde Caisse
+							</Text>
+
+							<Text className="flex-md text-2xl font-bold mt-1 text-orange-600">
 								{budget} DA
 							</Text>
 						</View>
 					</View>
 
-					<View className="bg-white p-4 rounded-2xl w-[48%] shadow-sm">
-						<Pressable onPress={() => router.push("/(tabs)/complaints")}>
-							<Text className="text-gray-500 font-semibold">Réclamations</Text>
-							<View className="flex flex-row gap-2 items-center">
-								<Text className="text-md font-bold mt-1 text-yellow-500">
-									{
-										complaints.filter((c) => c.status === "En_Traitement")
-											.length
-									}{" "}
-									/ {complaints.length}
-								</Text>
-								<Text>en traitement</Text>
-							</View>
-							<View className="flex flex-row gap-2 items-center">
-								<Text className="text-md font-bold mt-1 text-red-300">
-									{complaints.filter((c) => c.status === "En_Attente").length} /{" "}
-									{complaints.length}
-								</Text>
-								<Text>en Attente</Text>
-							</View>
-							<View className="flex flex-row gap-2 items-center">
-								<Text className="text-md font-bold mt-1 text-green-500">
-									{complaints.filter((c) => c.status === "Résolue").length} /{" "}
-									{complaints.length}
-								</Text>
-								<Text>Résolues</Text>
-							</View>
-						</Pressable>
-					</View>
-				</View>
-				{/* Quick Actions */}
-				<Text className="mt-8 mb-3 text-gray-700 font-semibold">
-					Actions Rapides
-				</Text>
-				<View className="flex flex-row gap-2 flex-wrap">
-					<View className="w-[60%] bg-white p-4 rounded-2xl shadow-sm">
-						<Pressable onPress={() => router.push("/(tabs)/complaints")}>
-							<Text className="text-blue-600 font-semibold">
-								+ Ajouter Une Réclamation
+					{/* RIGHT COLUMN - COMPLAINTS */}
+					<View className="flex-1 bg-white p-3 rounded-md shadow-sm justify-center">
+						<Pressable
+							className="flex-1"
+							onPress={() => router.push("/(tabs)/complaints")}
+						>
+							<Text
+								className="text-gray-500 text-xl font-semibold mb-1"
+								numberOfLines={1}
+							>
+								Réclamations
 							</Text>
+
+							{/* In progress */}
+							<View className="flex-1 flex-row items-center gap-2">
+								<Text className="text-lg font-bold text-yellow-500">
+									{inProgress} / {complaints.length}
+								</Text>
+
+								<Text
+									className="flex-1 text-lg font-bold"
+									numberOfLines={1}
+								>
+									en traitement
+								</Text>
+							</View>
+
+							{/* Pending */}
+							<View className="flex-1 flex-row items-center gap-2">
+								<Text className="text-base font-bold text-red-300">
+									{pending} / {complaints.length}
+								</Text>
+
+								<Text
+									className="flex-1 text-lg font-bold"
+									numberOfLines={1}
+								>
+									en Attente
+								</Text>
+							</View>
+
+							{/* Resolved */}
+							<View className="flex-1 flex-row items-center gap-2">
+								<Text className="text-base font-bold text-green-500">
+									{resolved} / {complaints.length}
+								</Text>
+
+								<Text
+									className="flex-1 text-lg font-bold"
+									numberOfLines={1}
+								>
+									Résolues
+								</Text>
+							</View>
 						</Pressable>
-						{/* ➕ Floating button */}
 					</View>
-					<CotisationBtn />
-					<BudgetModal />
-					<ResidentsPhoneModal />
 				</View>
-				{/* Notifications */}
-				<NotificationsCarousel />
-			</ScrollView>
+
+				{/* ================================================= */}
+				{/* QUICK ACTIONS */}
+				{/* ================================================= */}
+
+				<View className="flex-[2] pt-5">
+					<Text className="mb-2 text-gray-900 text-lg font-bold">
+						Actions Rapides
+					</Text>
+
+					<View className="flex-1">
+						{/* Row 1 */}
+						<View className="flex-1 flex-row gap-4">
+							{/* Add complaint */}
+							<View className="flex-[1]">
+								<AddComplaintModal />
+							</View>
+
+							{/* Cotiser */}
+							<View className="flex-1">
+								<CotisationBtn />
+							</View>
+						</View>
+
+						{/* Budget */}
+						<View className="flex-1">
+							<BudgetModal />
+						</View>
+
+						{/* Residents */}
+						<View className="flex-1">
+							<ResidentsPhoneModal />
+						</View>
+					</View>
+				</View>
+
+				{/* ================================================= */}
+				{/* NOTIFICATIONS */}
+				{/* ================================================= */}
+
+				<View className="flex-[2.4] min-h-0">
+					<NotificationsCarousel />
+				</View>
+			</View>
 		</Screen>
 	);
 }

@@ -40,11 +40,11 @@ export default function AppHeader() {
 				)}
 			</View>
 
-			<View className="flex flex-row justify-between px-4 pt-5 pb-2 border-b-2 border-b-white items-center">
+			<View className="flex flex-row justify-between px-4 pt-2 pb-2 border-b-2 border-b-white items-center">
 				<Pressable onPress={() => router.push("/(tabs)")}>
 					<Image
 						source={require("@/assets/images/logo-3.png")}
-						style={{ width: 60, height: 60 }}
+						style={{ width: 50, height: 50 }}
 						resizeMode="contain"
 					/>
 				</Pressable>
@@ -54,14 +54,14 @@ export default function AppHeader() {
 						<View className="flex flex-row gap-x-2 items-center">
 							{/* 🟢 Name */}
 							<View>
-								<Text className="text-gray-500">Bonjour 👋</Text>
-								<Text className="text-lg font-bold text-gray-800">
+								<Text className="text-gray-500 text-sm">Bonjour 👋</Text>
+								<Text className="text-sm font-bold text-gray-800">
 									{profile?.fullName || "Invité"}
 								</Text>
 							</View>
 							{/* 🟢 Avatar */}
-							<View className="w-12 h-12 bg-sky-700 rounded-full items-center justify-center">
-								<Text className="text-white text-xl font-bold">
+							<View className="w-8 h-8 bg-sky-700 rounded-full items-center justify-center">
+								<Text className="text-white text-sm font-bold">
 									{firstLetter}
 								</Text>
 							</View>

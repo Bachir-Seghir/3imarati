@@ -6,15 +6,8 @@ import { Link, router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
-import {
-	Image,
-	Platform,
-	Pressable,
-	ScrollView,
-	Text,
-	TextInput,
-	View,
-} from "react-native";
+import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function RegisterScreen() {
 	const [email, setEmail] = useState("");
@@ -117,12 +110,15 @@ export default function RegisterScreen() {
 
 	return (
 		<Screen>
-			<ScrollView
+			<KeyboardAwareScrollView
 				className="flex-1 px-4 pt-10"
 				contentContainerStyle={{
-					paddingBottom: Platform.OS === "ios" ? 60 : 100,
+					paddingBottom: 120,
 					gap: 20,
 				}}
+				keyboardShouldPersistTaps="handled"
+				enableOnAndroid
+				extraScrollHeight={40}
 			>
 				<View className="mt-4 p-4  justify-center">
 					<Text className="text-3xl mx-auto font-bold mb-4">
@@ -215,7 +211,7 @@ export default function RegisterScreen() {
 						</Text>
 					</Link>
 				</View>
-			</ScrollView>
+			</KeyboardAwareScrollView>
 		</Screen>
 	);
 }

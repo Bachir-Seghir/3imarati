@@ -7,13 +7,13 @@ export const BudgetModal = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	return (
-		<View className="bg-white p-4 rounded-2xl shadow-sm w-[100%]">
+		<View className="h-14 bg-orange-500 px-3 rounded-md shadow-sm justify-center">
 			<Pressable
 				onPress={() => setModalVisible(true)}
 				className="w-full"
 			>
-				<Text className="text-orange-600 text-md font-semibold">
-					Consultation Budget et dépenses
+				<Text className="text-white text-xl font-semibold text-center">
+					Consulter Budget
 				</Text>
 			</Pressable>
 			<Modal

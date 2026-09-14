@@ -13,7 +13,8 @@
 		"android": {
 			"predictiveBackGestureEnabled": false,
 			"permissions": ["android.permission.RECORD_AUDIO"],
-			"package": "com.imarati.app"
+			"package": "com.imarati.app",
+			"softwareKeyboardLayoutMode": "resize"
 		},
 		"web": {
 			"output": "static",
@@ -24,7 +25,7 @@
 			[
 				"expo-splash-screen",
 				{
-					"image": "./assets/images/icon.png",
+					"image": "./assets/images/logo-3.png",
 					"imageWidth": 200,
 					"resizeMode": "contain",
 					"backgroundColor": "#ffffff",

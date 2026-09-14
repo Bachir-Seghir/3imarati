@@ -1,20 +1,15 @@
-import { UserProfile } from "@/src/types/user";
-import { Ionicons } from "@expo/vector-icons";
-import { User } from "firebase/auth";
 import { useState } from "react";
 import { Modal, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../auth/context/AuthContext";
 import { createComplaint } from "../services/complaint.service";
 import { Complaint } from "../types/complaint";
 
 type Category = Complaint["category"];
 type Priority = Complaint["priority"];
 
-type Props = {
-	user: User;
-	profile: UserProfile;
-};
-export const AddComplaintModal = ({ user, profile }: Props) => {
+export const AddComplaintModal = () => {
+	const { user, profile } = useAuth();
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const [title, setTitle] = useState("");
@@ -47,16 +42,13 @@ export const AddComplaintModal = ({ user, profile }: Props) => {
 	};
 	return (
 		<>
-			<Pressable
-				onPress={() => setModalVisible(true)}
-				className="absolute -bottom-9 right-6 bg-blue-600 p-4 rounded-full"
-			>
-				<Ionicons
-					name="add"
-					size={20}
-					color="white"
-				/>
-			</Pressable>
+			<View className="h-14 bg-blue-500 px-3 rounded-md shadow-sm justify-center">
+				<Pressable onPress={() => setModalVisible(true)}>
+					<Text className="text-white text-xl font-semibold text-center">
+						Réclamer
+					</Text>
+				</Pressable>
+			</View>
 
 			{/* 🟢 CREATE MODAL */}
 			<Modal

@@ -60,22 +60,24 @@ export function ComplaintsFilter({
 
 	return (
 		<View
-			className={` ${
+			className={`mb-2 ${
 				active && highlight ? "bg-orange-100" : "bg-white"
-			}  border-2 border-white p-4 rounded-md mb-4`}
+			}  border-2 border-white p-4 rounded-md`}
 		>
-			<Text className="font-semibold mb-3">Filtrer les réclamations</Text>
+			<Text className="font-bold mb-3 text-center">
+				Filtrer les réclamations
+			</Text>
 
 			<View className="flex-row flex-wrap justify-center gap-2">
 				{/* En attente */}
 				<Pressable
 					onPress={() => handleStatusFilter("En_Attente")}
-					className={`px-3 py-2 rounded-md ${
+					className={`flex justify-center px-3 py-2 rounded-md ${
 						selectedFilter === "En_Attente" ? "bg-red-500" : "bg-gray-200"
 					}`}
 				>
 					<Text
-						className={`font-medium ${
+						className={`font-medium text-md ${
 							selectedFilter === "En_Attente" ? "text-white" : "text-black"
 						}`}
 					>
@@ -86,12 +88,12 @@ export function ComplaintsFilter({
 				{/* En traitement */}
 				<Pressable
 					onPress={() => handleStatusFilter("En_Traitement")}
-					className={`px-3 py-2 rounded-md ${
+					className={`flex justify-center px-3 py-2 rounded-md ${
 						selectedFilter === "En_Traitement" ? "bg-yellow-500" : "bg-gray-200"
 					}`}
 				>
 					<Text
-						className={`font-medium ${
+						className={`font-medium text-md ${
 							selectedFilter === "En_Traitement" ? "text-white" : "text-black"
 						}`}
 					>
@@ -102,12 +104,12 @@ export function ComplaintsFilter({
 				{/* Résolue */}
 				<Pressable
 					onPress={() => handleStatusFilter("Résolue")}
-					className={`px-3 py-2 rounded-md ${
+					className={`flex justify-center px-3 py-2 rounded-md ${
 						selectedFilter === "Résolue" ? "bg-green-500" : "bg-gray-200"
 					}`}
 				>
 					<Text
-						className={`font-medium ${
+						className={`font-medium text-md ${
 							selectedFilter === "Résolue" ? "text-white" : "text-black"
 						}`}
 					>
@@ -118,12 +120,12 @@ export function ComplaintsFilter({
 				{/* Mes réclamations */}
 				<Pressable
 					onPress={handleMyComplaints}
-					className={`px-3 py-2 rounded-md ${
+					className={`flex justify-center px-3 py-2 rounded-md ${
 						selectedFilter === "my" ? "bg-orange-500" : "bg-gray-200"
 					}`}
 				>
 					<Text
-						className={`font-medium ${
+						className={`font-medium text-md ${
 							selectedFilter === "my" ? "text-white" : "text-black"
 						}`}
 					>

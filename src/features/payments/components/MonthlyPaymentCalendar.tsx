@@ -79,7 +79,7 @@ export function MonthlyPaymentCalendar({
 							}`}
 						>
 							<Text
-								className={`text-center font-semibold ${
+								className={`text-center font-semibold text-sm ${
 									selected ? "text-white" : "text-gray-700"
 								}`}
 							>
