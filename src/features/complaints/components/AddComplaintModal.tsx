@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Modal, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -42,13 +43,22 @@ export const AddComplaintModal = () => {
 	};
 	return (
 		<>
-			<View className="h-14 bg-blue-500 px-3 rounded-md shadow-sm justify-center">
-				<Pressable onPress={() => setModalVisible(true)}>
-					<Text className="text-white text-xl font-semibold text-center">
-						Réclamer
-					</Text>
-				</Pressable>
-			</View>
+			<Pressable
+				onPress={() => setModalVisible(true)}
+				className="bg-blue-600 rounded-xl active:opacity-80"
+			>
+				<View className="h-14 flex-row items-center justify-center px-4">
+					<View className="bg-white/20 rounded-full w-9 h-9 items-center justify-center">
+						<Ionicons
+							name="add"
+							size={20}
+							color="white"
+						/>
+					</View>
+
+					<Text className="text-white text-base font-bold ml-2">Réclamer</Text>
+				</View>
+			</Pressable>
 
 			{/* 🟢 CREATE MODAL */}
 			<Modal

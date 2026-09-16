@@ -107,7 +107,7 @@ export default function AdminScreen() {
 							Gérer les Notifications
 						</Text>
 					</Pressable>
-
+					<AddNotificationModal />
 					<Pressable
 						onPress={() => router.push("/admin/users")}
 						className="w-[48%] rounded-md bg-teal-700 py-3 px-4 mb-3"
@@ -127,7 +127,6 @@ export default function AdminScreen() {
 							</Text>
 						</Pressable>
 					)}
-					<AddNotificationModal />
 
 					<AdvancePaymentModal
 						visible={advancePaymentVisible}

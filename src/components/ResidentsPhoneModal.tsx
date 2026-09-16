@@ -115,17 +115,16 @@ export default function ResidentsPhoneModal() {
 			{/* Main screen button */}
 			<Pressable
 				onPress={() => setVisible(true)}
-				className="bg-green-600 rounded-md p-3 flex-row items-center justify-center"
+				className="h-14 bg-green-600 rounded-xl flex-row items-center justify-center px-4 active:opacity-80"
 			>
-				<Ionicons
-					name="call-outline"
-					size={26}
-					color="white"
-				/>
-
-				<Text className="text-white font-bold text-md ml-2">
-					Annuaire Télephonique
-				</Text>
+				<View className="bg-white/20 rounded-full w-9 h-9 items-center justify-center">
+					<Ionicons
+						name="call-outline"
+						size={21}
+						color="white"
+					/>
+				</View>
+				<Text className="text-white text-base font-bold ml-2">Contacts</Text>
 			</Pressable>
 
 			{/* Modal */}
@@ -162,7 +161,7 @@ export default function ResidentsPhoneModal() {
 						</View>
 						{/* Filters */}
 						{!loading && residents.length > 0 && (
-							<View className="px-4">
+							<View className="px-4 mt-3">
 								{/* Search by name */}
 								<View className="flex-row items-center bg-gray-100 rounded-xl px-3 h-12">
 									<Ionicons
@@ -196,29 +195,34 @@ export default function ResidentsPhoneModal() {
 									contentContainerStyle={{ gap: 8 }}
 								>
 									{/* All floors */}
-									<Pressable
-										onPress={() => setSelectedFloor(null)}
-										className={`px-4 py-2.5 rounded-full ${selectedFloor === null ? "bg-blue-500" : "bg-gray-100"}`}
-									>
-										<Text
-											className={`font-semibold ${selectedFloor === null ? "text-white" : "text-gray-700"}`}
-										>
-											Tous
-										</Text>
-									</Pressable>
-									{floors.map((floor) => (
+									<View className="w-full gap-2">
 										<Pressable
-											key={floor}
-											onPress={() => setSelectedFloor(floor)}
-											className={`px-4 py-2.5 rounded-full ${selectedFloor === floor ? "bg-blue-500" : "bg-gray-100"}`}
+											onPress={() => setSelectedFloor(null)}
+											className={`w-[100px] py-1 rounded-md ${selectedFloor === null ? "bg-blue-500" : "bg-gray-100"}`}
 										>
 											<Text
-												className={`font-semibold ${selectedFloor === floor ? "text-white" : "text-gray-700"}`}
+												className={`text-center font-semibold ${selectedFloor === null ? "text-white" : "text-gray-700"}`}
 											>
-												Étage {floor}
+												Tous
 											</Text>
 										</Pressable>
-									))}
+										<Text className="font-bold">Filtrer Par étage</Text>
+										<View className="w-full flex-row gap-2 flex-wrap">
+											{floors.map((floor) => (
+												<Pressable
+													key={floor}
+													onPress={() => setSelectedFloor(floor)}
+													className={`px-3 py-2 rounded-md ${selectedFloor === floor ? "bg-blue-500" : "bg-gray-100"}`}
+												>
+													<Text
+														className={`text-center font-semibold ${selectedFloor === floor ? "text-white" : "text-gray-700"}`}
+													>
+														{floor}
+													</Text>
+												</Pressable>
+											))}
+										</View>
+									</View>
 								</ScrollView>
 								{/* Result count + reset */}
 								<View className="flex-row items-center justify-between mt-3 mb-1">
@@ -263,7 +267,7 @@ export default function ResidentsPhoneModal() {
 										</Text>
 									</View>
 								) : (
-									residents.map((resident) => (
+									filteredResidents.map((resident) => (
 										<View
 											key={resident.id}
 											className="bg-gray-100 rounded-2xl p-4 mb-3"

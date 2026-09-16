@@ -1,12 +1,10 @@
 import Screen from "@/src/components/Screen";
-import { uploadIdentityImage } from "@/src/features/auth/services/upload.service";
 import { auth, db } from "@/src/services/firebase";
-import * as ImagePicker from "expo-image-picker";
 import { Link, router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
-import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function RegisterScreen() {
@@ -16,59 +14,9 @@ export default function RegisterScreen() {
 	const [floor, setFloor] = useState("");
 	const [door, setDoor] = useState("");
 	const [phone, setPhone] = useState("");
-	const [image, setImage] = useState<string>("");
-
-	const takePhoto = async () => {
-		// 🔐 permission for camera
-		const permission = await ImagePicker.requestCameraPermissionsAsync();
-
-		if (!permission.granted) {
-			alert("Permission caméra refusée");
-			return;
-		}
-
-		// 📸 open camera
-		const result = await ImagePicker.launchCameraAsync({
-			allowsEditing: false,
-			quality: 0.7,
-		});
-
-		if (!result.canceled) {
-			setImage(result.assets[0].uri);
-		}
-	};
-
-	// 📸 Pick image
-	const pickImage = async () => {
-		// 🔐 Ask permission
-		const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-		if (!permission.granted) {
-			alert("Permission d'accès aux photos refusée");
-			return;
-		}
-
-		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: "images", // ✅ new API
-			allowsEditing: false,
-			quality: 0.7,
-		});
-
-		if (!result.canceled) {
-			setImage(result.assets[0].uri);
-		}
-	};
 
 	const handleRegister = async () => {
-		if (
-			!email ||
-			!fullName ||
-			!password ||
-			!phone ||
-			!floor ||
-			!door ||
-			!image
-		) {
+		if (!email || !fullName || !password || !phone || !floor || !door) {
 			alert(
 				"il Faut emplire toutes les cases et inserer une photo d'identité ",
 			);
@@ -86,9 +34,6 @@ export default function RegisterScreen() {
 			// 2. IMPORTANT: wait for auth to be fully ready
 			await user.getIdToken(true);
 
-			// 3. Upload image AFTER auth is stable
-			const imageUrl = await uploadIdentityImage(image, user.uid);
-
 			// 4. Save Firestore user
 			await setDoc(doc(db, "users", user.uid), {
 				email,
@@ -96,7 +41,6 @@ export default function RegisterScreen() {
 				floor: Number(floor),
 				door: Number(door),
 				phone,
-				identityImage: imageUrl,
 				roles: ["resident"],
 				approved: false,
 				createdAt: serverTimestamp(),
@@ -164,38 +108,6 @@ export default function RegisterScreen() {
 						onChangeText={setDoor}
 					/>
 
-					{/* Image picker */}
-					<Text className="font-semibold mb-2">
-						Photo du CIN d'acquéreur ou Locataire
-					</Text>
-					<View className="flex-row gap-2 mb-6">
-						<Pressable
-							onPress={takePhoto}
-							className="bg-blue-600 p-3 rounded-md flex-1"
-						>
-							<Text className="text-white text-center font-semibold">
-								Prendre photo
-							</Text>
-						</Pressable>
-
-						<Pressable
-							onPress={pickImage}
-							className="bg-gray-600 p-3 rounded-md flex-1"
-						>
-							<Text className="text-white text-center font-semibold">
-								Galerie
-							</Text>
-						</Pressable>
-					</View>
-
-					{/* Preview */}
-					{image && (
-						<Image
-							source={{ uri: image }}
-							className="w-full h-52 rounded-md mb-4"
-							resizeMode="cover"
-						/>
-					)}
 					<Pressable
 						onPress={handleRegister}
 						className="bg-blue-600 p-3 rounded"

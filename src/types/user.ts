@@ -9,7 +9,6 @@ export type UserProfile = {
     roles: UserRole[];
     floor: number;
     door: number;
-    identityImage: string | null;
     approved: boolean;
     createdAt: any; // Firestore timestamp
 };

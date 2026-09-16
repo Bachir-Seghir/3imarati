@@ -12,7 +12,7 @@ export function useAuthState() {
     const [profileLoading, setProfileLoading] = useState(false);
 
     useEffect(() => {
-        let unsubscribeProfile: (() => void) | null = null;
+        let unsubscribeProfile: (() => void) | undefined;
 
         const unsubscribeAuth = onAuthStateChanged(auth, (u) => {
             setUser(u);
@@ -20,19 +20,20 @@ export function useAuthState() {
 
             // No authenticated user
             if (!u) {
+                unsubscribeProfile?.();
+                unsubscribeProfile = undefined;
+
                 setProfileLoading(false);
                 setAuthLoading(false);
-
-                if (unsubscribeProfile) {
-                    unsubscribeProfile();
-                    unsubscribeProfile = null;
-                }
 
                 return;
             }
 
             // User exists → listen to Firestore profile
             setProfileLoading(true);
+
+            // Remove previous profile listener if any
+            unsubscribeProfile?.();
 
             const ref = doc(db, "users", u.uid);
 
@@ -50,6 +51,7 @@ export function useAuthState() {
                 },
                 (error) => {
                     console.error("PROFILE ERROR:", error);
+
                     setProfile(null);
                     setProfileLoading(false);
                 },
@@ -60,10 +62,7 @@ export function useAuthState() {
 
         return () => {
             unsubscribeAuth();
-
-            if (unsubscribeProfile) {
-                unsubscribeProfile();
-            }
+            unsubscribeProfile?.();
         };
     }, []);
 

@@ -28,37 +28,37 @@ export default function HomeScreen() {
 
 	return (
 		<Screen>
-			<View className="flex-1 px-2">
+			<View className="h-full px-2">
 				{/* ================================================= */}
 				{/* STATS */}
 				{/* ================================================= */}
 				<View>
-					<Text className="mb-2 text-gray-900 text-lg font-bold">
+					<Text className="mb-2 text-center text-gray-900 text-lg font-bold">
 						Informations Générales
 					</Text>
 				</View>
-				<View className="flex-row gap-3 flex-[1.5]">
+				<View className="flex-row gap-3 h-[26%]">
 					{/* LEFT COLUMN */}
 
 					<View className="flex-1 gap-2">
 						{/* Residents */}
 						<View className="flex-1 bg-white px-3 rounded-md shadow-sm justify-center">
-							<Text className="text-gray-500 font-semibold text-lg">
+							<Text className="text-gray-500 font-semibold text-md">
 								Résidents Inscrits
 							</Text>
 
-							<Text className="flex-md text-2xl font-bold mt-1">
+							<Text className="flex-md text-xl font-bold mt-1">
 								{residents} / 72
 							</Text>
 						</View>
 
 						{/* Budget */}
 						<View className="flex-1 bg-white px-3 rounded-md shadow-sm justify-center">
-							<Text className="text-gray-500 text-lg font-semibold">
+							<Text className="text-gray-500 text-md font-semibold">
 								Solde Caisse
 							</Text>
 
-							<Text className="flex-md text-2xl font-bold mt-1 text-orange-600">
+							<Text className="flex-md text-xl font-bold mt-1 text-orange-600">
 								{budget} DA
 							</Text>
 						</View>
@@ -71,7 +71,7 @@ export default function HomeScreen() {
 							onPress={() => router.push("/(tabs)/complaints")}
 						>
 							<Text
-								className="text-gray-500 text-xl font-semibold mb-1"
+								className="text-gray-500 text-md font-semibold mb-1"
 								numberOfLines={1}
 							>
 								Réclamations
@@ -80,43 +80,28 @@ export default function HomeScreen() {
 							{/* In progress */}
 							<View className="flex-1 flex-row items-center gap-2">
 								<Text className="text-lg font-bold text-yellow-500">
-									{inProgress} / {complaints.length}
+									{inProgress}/{complaints.length}
 								</Text>
 
-								<Text
-									className="flex-1 text-lg font-bold"
-									numberOfLines={1}
-								>
-									en traitement
-								</Text>
+								<Text className="flex-1 text-md font-bold">en traitement</Text>
 							</View>
 
 							{/* Pending */}
 							<View className="flex-1 flex-row items-center gap-2">
-								<Text className="text-base font-bold text-red-300">
-									{pending} / {complaints.length}
+								<Text className="text-lg font-bold text-red-300">
+									{pending}/{complaints.length}
 								</Text>
 
-								<Text
-									className="flex-1 text-lg font-bold"
-									numberOfLines={1}
-								>
-									en Attente
-								</Text>
+								<Text className="flex-1 text-md font-bold">en Attente</Text>
 							</View>
 
 							{/* Resolved */}
 							<View className="flex-1 flex-row items-center gap-2">
-								<Text className="text-base font-bold text-green-500">
-									{resolved} / {complaints.length}
+								<Text className="text-lg font-bold text-green-500">
+									{resolved}/{complaints.length}
 								</Text>
 
-								<Text
-									className="flex-1 text-lg font-bold"
-									numberOfLines={1}
-								>
-									Résolues
-								</Text>
+								<Text className="flex-1 text-md font-bold">Résolues</Text>
 							</View>
 						</Pressable>
 					</View>
@@ -126,32 +111,28 @@ export default function HomeScreen() {
 				{/* QUICK ACTIONS */}
 				{/* ================================================= */}
 
-				<View className="flex-[2] pt-5">
-					<Text className="mb-2 text-gray-900 text-lg font-bold">
+				<View className="mt-2 h-[30%]">
+					<Text className="mb-2 text-gray-900  text-center text-lg font-bold">
 						Actions Rapides
 					</Text>
 
-					<View className="flex-1">
-						{/* Row 1 */}
-						<View className="flex-1 flex-row gap-4">
-							{/* Add complaint */}
-							<View className="flex-[1]">
-								<AddComplaintModal />
-							</View>
-
-							{/* Cotiser */}
-							<View className="flex-1">
-								<CotisationBtn />
-							</View>
+					{/* Row 1 */}
+					<View className="flex-wrap w-full justify-center gap-2 flex-row mb-2">
+						{/* Add complaint */}
+						<View className="w-[44%]">
+							<AddComplaintModal />
 						</View>
 
-						{/* Budget */}
-						<View className="flex-1">
+						{/* Cotiser */}
+						<View className="w-[44%]">
+							<CotisationBtn />
+						</View>
+						<View className="w-[44%]">
 							<BudgetModal />
 						</View>
 
 						{/* Residents */}
-						<View className="flex-1">
+						<View className="w-[44%]">
 							<ResidentsPhoneModal />
 						</View>
 					</View>
@@ -160,8 +141,7 @@ export default function HomeScreen() {
 				{/* ================================================= */}
 				{/* NOTIFICATIONS */}
 				{/* ================================================= */}
-
-				<View className="flex-[2.4] min-h-0">
+				<View className="h-30%">
 					<NotificationsCarousel />
 				</View>
 			</View>
