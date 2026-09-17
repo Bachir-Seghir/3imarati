@@ -45,7 +45,7 @@ export const AddComplaintModal = () => {
 		<>
 			<Pressable
 				onPress={() => setModalVisible(true)}
-				className="bg-blue-600 rounded-xl active:opacity-80"
+				className="bg-green-700 rounded-xl active:opacity-80"
 			>
 				<View className="h-14 flex-row items-center justify-center px-4">
 					<View className="bg-white/20 rounded-full w-9 h-9 items-center justify-center">

@@ -35,18 +35,20 @@ export const CotisationBtn = () => {
 		<>
 			<Pressable
 				onPress={() => setModalVisible(true)}
-				className="bg-green-600 rounded-xl active:opacity-80"
+				className="bg-yellow-400 rounded-xl active:opacity-80"
 			>
 				<View className="h-14 flex-row items-center justify-center px-4">
 					<View className="bg-white/20 rounded-full w-9 h-9 items-center justify-center">
 						<Ionicons
 							name="cash-outline"
 							size={21}
-							color="white"
+							color="#065F46"
 						/>
 					</View>
 
-					<Text className="text-white text-base font-bold ml-2">Cotiser</Text>
+					<Text className="text-green-800 text-base font-bold ml-2">
+						Cotiser
+					</Text>
 				</View>
 			</Pressable>
 			<Modal

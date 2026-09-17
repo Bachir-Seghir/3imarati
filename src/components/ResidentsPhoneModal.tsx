@@ -115,7 +115,7 @@ export default function ResidentsPhoneModal() {
 			{/* Main screen button */}
 			<Pressable
 				onPress={() => setVisible(true)}
-				className="h-14 bg-green-600 rounded-xl flex-row items-center justify-center px-4 active:opacity-80"
+				className="h-14 bg-green-700 rounded-xl flex-row items-center justify-center px-4 active:opacity-80"
 			>
 				<View className="bg-white/20 rounded-full w-9 h-9 items-center justify-center">
 					<Ionicons

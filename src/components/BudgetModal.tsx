@@ -10,22 +10,20 @@ export const BudgetModal = () => {
 		<>
 			<Pressable
 				onPress={() => setModalVisible(true)}
-				className="bg-orange-500 rounded-xl active:opacity-80"
+				className="bg-yellow-500 rounded-xl active:opacity-80"
 			>
 				<View className="h-14 flex-row items-center justify-center px-4">
 					<View className="bg-white/20 rounded-full w-9 h-9 items-center justify-center">
-						{" "}
 						<Ionicons
 							name="wallet-outline"
 							size={21}
-							color="white"
-						/>{" "}
-					</View>{" "}
-					<Text className="text-white text-base font-bold ml-2">
-						{" "}
-						Consulter Budget{" "}
-					</Text>{" "}
-				</View>{" "}
+							color="#065F46"
+						/>
+					</View>
+					<Text className="text-green-800 text-base font-bold ml-2">
+						Consulter Budget
+					</Text>
+				</View>
 			</Pressable>
 
 			<Modal

@@ -26,7 +26,7 @@ export default function PendingScreen() {
 					className="mb-10"
 				>
 					<Image
-						source={require("@/assets/images/logo-3.png")}
+						source={require("@/assets/images/logo-4.png")}
 						style={{ width: 200, height: 200 }}
 						resizeMode="contain"
 					/>

@@ -4,7 +4,7 @@
 		"slug": "3imarati",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
+		"icon": "./assets/images/logo-4.png",
 		"scheme": "imarati",
 		"userInterfaceStyle": "automatic",
 		"ios": {
@@ -25,7 +25,7 @@
 			[
 				"expo-splash-screen",
 				{
-					"image": "./assets/images/logo-3.png",
+					"image": "./assets/images/logo-4.png",
 					"imageWidth": 200,
 					"resizeMode": "contain",
 					"backgroundColor": "#ffffff",

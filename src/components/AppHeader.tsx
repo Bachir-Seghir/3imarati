@@ -1,67 +1,128 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
+import Svg, { Path } from "react-native-svg";
+
 import { useAuth } from "../features/auth/context/AuthContext";
 import { hasAnyRole } from "../utils/RolesCheck";
 
 export default function AppHeader() {
 	const { profile } = useAuth();
 
-	const firstLetter = profile?.fullName?.charAt(0).toUpperCase() || "Inv";
+	const firstLetter = profile?.fullName?.charAt(0).toUpperCase() || "I";
+
+	const isAdmin = hasAnyRole(profile, ["superAdmin", "admin", "budgetManager"]);
+
 	return (
-		<>
-			<View className=" bg-slate-800 flex-row justify-between">
-				<Pressable
-					onPress={() => {
-						if (router.canGoBack()) {
-							router.back();
-						}
-					}}
-					className="flex px-6 py-2 items-center"
+		<View className="relative h-[145px] overflow-hidden">
+			{/* ================================================= */}
+			{/* GREEN SMASH BACKGROUND */}
+			{/* ================================================= */}
+
+			<View className="absolute inset-0">
+				<Svg
+					width="100%"
+					height="170"
+					viewBox="0 0 400 145"
+					preserveAspectRatio="none"
 				>
-					<Ionicons
-						name="arrow-back"
-						size={22}
-						color="#ececec"
+					<Path
+						d="
+				M0 0
+				H400
+				V90
+
+				C350 105 300 70 250 75
+				C180 80 120 125 0 120
+
+				Z
+			"
+						fill="#065F46"
 					/>
-				</Pressable>
-				{hasAnyRole(profile, ["superAdmin", "admin", "budgetManager"]) && (
-					<Pressable
-						onPress={() => router.push("/admin")}
-						className="flex flex-row gap-1 px-6 py-2 items-center"
-					>
-						<Ionicons
-							name="settings-sharp"
-							size={22}
-							color="#9ed1f1"
-						/>
-						<Text className="font-semibold text-sky-100">Menu Admin</Text>
-					</Pressable>
-				)}
+				</Svg>
 			</View>
 
-			<View className="flex flex-row justify-between px-4 pt-2 pb-2 border-b-2 border-b-white items-center">
-				<Pressable onPress={() => router.push("/(tabs)")}>
+			{/* ================================================= */}
+			{/* LIGHT GREEN DECORATION */}
+			{/* ================================================= */}
+
+			{/* ================================================= */}
+			{/* HEADER CONTENT */}
+			{/* ================================================= */}
+
+			<View className="flex-row items-start justify-between px-5 pt-4">
+				{/* ========================= */}
+				{/* LOGO */}
+				{/* ========================= */}
+				<Pressable
+					onPress={() => router.push("/(tabs)")}
+					className=" rounded-2xl"
+				>
 					<Image
-						source={require("@/assets/images/logo-3.png")}
-						style={{ width: 50, height: 50 }}
+						source={require("@/assets/images/logo-header.png")}
+						style={{
+							width: 100,
+							height: 100,
+						}}
 						resizeMode="contain"
 					/>
 				</Pressable>
 
-				<View className="flex items-center">
+				{/* ========================= */}
+				{/* RIGHT SIDE */}
+				{/* ========================= */}
+
+				<View className="items-end">
+					{/* ADMIN MENU */}
+
+					{isAdmin && (
+						<Pressable
+							onPress={() => router.push("/admin")}
+							className="flex-row items-center mb-4"
+						>
+							<Ionicons
+								name="settings-sharp"
+								size={21}
+								color="#FDE68A"
+							/>
+
+							<Text className="ml-1.5 font-bold text-white">Menu Admin</Text>
+						</Pressable>
+					)}
+
+					{/* USER */}
+
 					<Pressable onPress={() => router.push("/(tabs)/profile")}>
-						<View className="flex flex-row gap-x-2 items-center">
-							{/* 🟢 Name */}
-							<View>
-								<Text className="text-gray-500 text-sm">Bonjour 👋</Text>
-								<Text className="text-sm font-bold text-gray-800">
+						<View className="flex-row items-center">
+							{/* NAME */}
+
+							<View className="items-end mr-2">
+								<Text className="text-green-100 text-sm">Bonjour 👋</Text>
+
+								<Text
+									className="text-white text-sm font-bold"
+									numberOfLines={1}
+								>
 									{profile?.fullName || "Invité"}
 								</Text>
 							</View>
-							{/* 🟢 Avatar */}
-							<View className="w-8 h-8 bg-sky-700 rounded-full items-center justify-center">
-								<Text className="text-white text-sm font-bold">
+
+							{/* AVATAR */}
+
+							<View
+								className="w-11 h-11 rounded-full items-center justify-center"
+								style={{
+									backgroundColor: "#FACC15",
+									borderWidth: 3,
+									borderColor: "#FFFFFF",
+								}}
+							>
+								<Text
+									className="text-base font-bold"
+									style={{
+										color: "#065F46",
+									}}
+								>
 									{firstLetter}
 								</Text>
 							</View>
@@ -69,6 +130,6 @@ export default function AppHeader() {
 					</Pressable>
 				</View>
 			</View>
-		</>
+		</View>
 	);
 }

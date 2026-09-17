@@ -53,7 +53,7 @@ export default function LoginScreen() {
 			<View className="flex flex-row justify-center mb-6">
 				<Pressable onPress={() => router.replace("/(tabs)")}>
 					<Image
-						source={require("@/assets/images/logo-3.png")}
+						source={require("@/assets/images/logo-4.png")}
 						style={{ width: 100, height: 100 }}
 						resizeMode="contain"
 					/>
