@@ -2,6 +2,7 @@ import Screen from "@/src/components/Screen";
 
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { updateUserProfile } from "@/src/features/auth/services/user.service";
+import { removePushToken } from "@/src/features/notifications/services/pushNotifications";
 import { auth } from "@/src/services/firebase";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -191,6 +192,10 @@ export default function ProfileScreen() {
 
 	const handleLogout = async () => {
 		try {
+			if (user) {
+				await removePushToken(user.uid);
+			}
+
 			await signOut(auth);
 		} catch (error) {
 			console.log("LOGOUT ERROR:", error);

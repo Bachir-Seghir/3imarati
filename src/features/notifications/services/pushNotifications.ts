@@ -3,6 +3,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 
 import {
+    deleteDoc,
     doc,
     serverTimestamp,
     setDoc,
@@ -105,5 +106,47 @@ export async function registerForPushNotificationsAsync(
         );
 
         return null;
+    }
+}
+
+export async function removePushToken(userId: string) {
+    try {
+        if (!Device.isDevice) {
+            return;
+        }
+
+        const projectId =
+            Constants.expoConfig?.extra?.eas?.projectId ??
+            Constants.easConfig?.projectId;
+
+        if (!projectId) {
+            console.log("EAS project ID not found.");
+            return;
+        }
+
+        const token = (
+            await Notifications.getExpoPushTokenAsync({
+                projectId,
+            })
+        ).data;
+
+        const tokenId = encodeURIComponent(token);
+
+        await deleteDoc(
+            doc(
+                db,
+                "users",
+                userId,
+                "pushTokens",
+                tokenId
+            )
+        );
+
+        console.log("Push token removed successfully.");
+    } catch (error) {
+        console.error(
+            "Push token removal error:",
+            error
+        );
     }
 }
