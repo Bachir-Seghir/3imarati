@@ -12,6 +12,7 @@ export default function TabsLayout() {
 	const [pendingCount, setPendingCount] = useState(0);
 
 	const canManage = hasAnyRole(profile, ["admin", "superAdmin"]);
+
 	useEffect(() => {
 		if (!canManage) return;
 

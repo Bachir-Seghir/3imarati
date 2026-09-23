@@ -1,5 +1,6 @@
 import Screen from "@/src/components/Screen";
 import { UserItemCard } from "@/src/components/UserItemCard";
+import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { db } from "@/src/services/firebase";
 import { UserProfile } from "@/src/types/user";
 import { collection, onSnapshot, query } from "firebase/firestore";
@@ -10,6 +11,7 @@ type UserItem = UserProfile & { id: string };
 
 const UsersList = () => {
 	const [users, setUsers] = useState<UserItem[]>([]);
+	const { user } = useAuth();
 
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
@@ -44,7 +46,7 @@ const UsersList = () => {
 	return (
 		<Screen>
 			<ScrollView
-				className="flex-1 h-full px-4"
+				className="mb-[50px] flex-1 h-full px-4"
 				contentContainerStyle={{ flexGrow: 1 }}
 			>
 				<Text className="text-2xl font-bold mb-4 mx-auto">

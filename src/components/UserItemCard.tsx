@@ -66,12 +66,14 @@ export const UserItemCard = ({ user }: { user: UserItem }) => {
 						<Text className="text-white text-center">Approuver</Text>
 					</Pressable>
 				)}
-				<Pressable
-					onPress={() => handleDeleteUser(user.id)}
-					className="bg-red-600 p-2 mt-3 rounded"
-				>
-					<Text className="text-white text-center">Supprimer</Text>
-				</Pressable>
+				{user.roles.includes("superAdmin") ? null : (
+					<Pressable
+						onPress={() => handleDeleteUser(user.id)}
+						className="bg-red-600 p-2 mt-3 rounded"
+					>
+						<Text className="text-white text-center">Supprimer</Text>
+					</Pressable>
+				)}
 			</View>
 		</View>
 	);

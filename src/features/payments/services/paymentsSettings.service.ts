@@ -10,6 +10,7 @@ const PAYMENT_SETTINGS_ID = "payment";
 
 export type PaymentSettings = {
     monthlyAmount: number;
+    paymentStartMonth: string;
     updatedAt?: any;
     updatedBy?: string;
 };
@@ -23,14 +24,33 @@ export const getPaymentSettings = async (): Promise<PaymentSettings> => {
         // Default value if settings don't exist yet
         return {
             monthlyAmount: 1000,
+            paymentStartMonth: "",
         };
     }
 
-    return snap.data() as PaymentSettings;
+    const data = snap.data();
+
+    return {
+        monthlyAmount:
+            typeof data.monthlyAmount === "number"
+                ? data.monthlyAmount
+                : 1000,
+
+        paymentStartMonth:
+            typeof data.paymentStartMonth === "string"
+                ? data.paymentStartMonth
+                : "",
+
+        updatedAt: data.updatedAt,
+        updatedBy: data.updatedBy,
+    }
 };
 
-export const updateMonthlyAmount = async (
-    monthlyAmount: number,
+export const updatePaymentSettings = async (
+    settings: {
+        monthlyAmount: number;
+        paymentStartMonth: string;
+    },
     adminId?: string,
 ) => {
     const ref = doc(db, "settings", PAYMENT_SETTINGS_ID);
@@ -38,7 +58,8 @@ export const updateMonthlyAmount = async (
     await setDoc(
         ref,
         {
-            monthlyAmount,
+            monthlyAmount: settings.monthlyAmount,
+            paymentStartMonth: settings.paymentStartMonth,
             updatedAt: serverTimestamp(),
             updatedBy: adminId ?? null,
         },

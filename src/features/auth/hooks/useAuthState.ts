@@ -3,6 +3,7 @@ import { UserProfile } from "@/src/types/user";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { registerForPushNotificationsAsync } from "../../notifications/services/pushNotifications";
 
 export function useAuthState() {
     const [user, setUser] = useState<User | null>(null);
@@ -28,6 +29,14 @@ export function useAuthState() {
 
                 return;
             }
+            // Register this device for push notifications
+            registerForPushNotificationsAsync(u.uid)
+                .catch((error) => {
+                    console.error(
+                        "Push notification registration failed:",
+                        error
+                    );
+                });
 
             // User exists → listen to Firestore profile
             setProfileLoading(true);

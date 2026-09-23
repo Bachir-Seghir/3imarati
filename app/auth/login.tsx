@@ -66,13 +66,13 @@ export default function LoginScreen() {
 			)}
 			<TextInput
 				placeholder="Email"
-				className="border p-3 rounded-lg mb-3"
+				className="border p-3 rounded-lg mb-3 text-gray-800"
 				onChangeText={setEmail}
 			/>
 			<TextInput
 				placeholder="Password"
 				secureTextEntry
-				className="border p-3 rounded-lg mb-4"
+				className="border p-3 rounded-lg mb-4 text-gray-800"
 				onChangeText={setPassword}
 			/>
 			{loading ? (

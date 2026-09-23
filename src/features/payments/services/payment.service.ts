@@ -35,17 +35,15 @@ const addMonths = (date: Date, months: number) => {
     return result;
 };
 
-// *======================================================*
-// *CREATE NORMAL MONTHLY PAYMENT*
-// *======================================================*
+// ======================================================
+// CREATE MONTHLY PAYMENTS FROM START MONTH
+// ======================================================
 
-export const createMonthlyPayment = async (userId: string) => {
-    const month = getMonthString(new Date());
-
-    // *Get monthly amount configured by admin*
+export const createMonthlyPayments = async (userId: string) => {
     const settings = await getPaymentSettings();
 
     const monthlyAmount = settings.monthlyAmount;
+    const paymentStartMonth = settings.paymentStartMonth;
 
     if (monthlyAmount <= 0) {
         throw new Error(
@@ -53,49 +51,76 @@ export const createMonthlyPayment = async (userId: string) => {
         );
     }
 
-    // *Check if payment already exists*
-    const q = query(
-        collection(db, "payments"),
-        where("userId", "==", userId),
-        where("month", "==", month),
-    );
+    if (!paymentStartMonth) {
+        throw new Error(
+            "Le mois de début des paiements n'est pas configuré.",
+        );
+    }
 
-    const existing = await getDocs(q);
+    // Current month
+    const currentMonth = getMonthString(new Date());
 
-    if (!existing.empty) return;
+    // Prevent a future start month
+    if (paymentStartMonth > currentMonth) {
+        throw new Error(
+            "Le mois de début des paiements ne peut pas être dans le futur.",
+        );
+    }
 
-    // *Get user*
+    // Get user
     const userRef = doc(db, "users", userId);
-
     const userSnap = await getDoc(userRef);
 
-    if (!userSnap.exists()) return;
+    if (!userSnap.exists()) {
+        throw new Error("Utilisateur introuvable.");
+    }
 
     const user = userSnap.data();
 
-    await addDoc(collection(db, "payments"), {
-        userId,
+    // Start from the configured payment month
+    const currentDate = new Date(
+        `${paymentStartMonth}-01T00:00:00`,
+    );
 
-        month,
+    const endDate = new Date(
+        `${currentMonth}-01T00:00:00`,
+    );
 
-        amount: monthlyAmount,
+    // Generate every month until current month
+    while (currentDate <= endDate) {
+        const month = getMonthString(currentDate);
 
-        paid: false,
+        // Check if this month's payment already exists
+        const q = query(
+            collection(db, "payments"),
+            where("userId", "==", userId),
+            where("month", "==", month),
+        );
 
-        paidAt: null,
+        const existing = await getDocs(q);
 
-        fullName: user.fullName,
+        // Create only if it doesn't exist
+        if (existing.empty) {
+            await addDoc(collection(db, "payments"), {
+                userId,
+                month,
+                amount: monthlyAmount,
+                paid: false,
+                paidAt: null,
+                fullName: user.fullName,
+                floor: user.floor,
+                door: user.door,
+                createdAt: serverTimestamp(),
+                paymentType: "monthly",
+            });
+        }
 
-        floor: user.floor,
-
-        door: user.door,
-
-        createdAt: serverTimestamp(),
-
-        paymentType: "monthly",
-    });
+        // Move to next month
+        currentDate.setMonth(
+            currentDate.getMonth() + 1,
+        );
+    }
 };
-
 // *======================================================*
 // *ADVANCE PAYMENT*
 // *======================================================*

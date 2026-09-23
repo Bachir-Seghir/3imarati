@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1073125329195",
+    "project_id": "imarati-2953c",
+    "storage_bucket": "imarati-2953c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073125329195:android:a328121aecb9c93cee5d6e",
+        "android_client_info": {
+          "package_name": "com.imarati.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoZZxVsEM1EJmbV44PIOxa1RJvLWgiBJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

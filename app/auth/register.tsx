@@ -71,40 +71,40 @@ export default function RegisterScreen() {
 
 					<TextInput
 						placeholder="Email"
-						className="border p-3 rounded-md mb-3"
+						className="border p-3 rounded-md mb-3 text-gray-800"
 						onChangeText={setEmail}
 					/>
 					<TextInput
 						placeholder="0770xxx"
 						keyboardType="phone-pad"
-						className="border p-3 rounded-md mb-3"
+						className="border p-3 rounded-md mb-3 text-gray-800"
 						onChangeText={setPhone}
 					/>
 
 					<TextInput
 						placeholder="Mot de Pass"
 						secureTextEntry
-						className="border p-3 rounded-md mb-3"
+						className="border p-3 rounded-md mb-3 text-gray-800"
 						onChangeText={setPassword}
 					/>
 
 					<TextInput
 						placeholder="Nom & Prénom"
-						className="border p-3 rounded-md mb-3"
+						className="border p-3 rounded-md mb-3 text-gray-800"
 						onChangeText={setFullName}
 					/>
 
 					<TextInput
 						placeholder="Étage Ex: 3"
 						keyboardType="numeric"
-						className="border p-3 rounded-md mb-3"
+						className="border p-3 rounded-md mb-3 text-gray-800"
 						onChangeText={setFloor}
 					/>
 
 					<TextInput
 						placeholder="Porte Ex: 5"
 						keyboardType="numeric"
-						className="border p-3 rounded-md mb-3"
+						className="border p-3 rounded-md mb-3 text-gray-800"
 						onChangeText={setDoor}
 					/>
 

@@ -2,46 +2,71 @@ import Screen from "@/src/components/Screen";
 import { useAuth } from "@/src/features/auth/context/AuthContext";
 import { AddNotificationModal } from "@/src/features/notifications/components/AddNotificationModal";
 import AdvancePaymentModal from "@/src/features/payments/components/AdvancePaymentModal";
-import { createMonthlyPayment } from "@/src/features/payments/services/payment.service";
+import { createMonthlyPayments } from "@/src/features/payments/services/payment.service";
 import {
 	getPaymentSettings,
-	updateMonthlyAmount,
+	updatePaymentSettings,
 } from "@/src/features/payments/services/paymentsSettings.service";
 import { db } from "@/src/services/firebase";
 import { getDashboardTitle, hasAnyRole } from "@/src/utils/RolesCheck";
+import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import {
+	ActivityIndicator,
+	Pressable,
+	ScrollView,
+	Text,
+	TextInput,
+	View,
+} from "react-native";
 
 export default function AdminScreen() {
 	const { profile, user } = useAuth();
 	const [monthlyAmount, setMonthlyAmount] = useState("");
-	const [savingAmount, setSavingAmount] = useState(false);
+	const [paymentStartMonth, setPaymentStartMonth] = useState("");
+	const [savingSettings, setSavingSettings] = useState(false);
 	const [advancePaymentVisible, setAdvancePaymentVisible] = useState(false);
+	const [generatingPayments, setGeneratingPayments] = useState(false);
 	const generateMonthlyPayments = async () => {
-		const usersSnap = await getDocs(collection(db, "users"));
+		try {
+			setGeneratingPayments(true);
 
-		for (const userDoc of usersSnap.docs) {
-			const user = userDoc.data();
+			const usersSnap = await getDocs(collection(db, "users"));
 
-			if (user.approved) {
-				await createMonthlyPayment(userDoc.id);
+			for (const userDoc of usersSnap.docs) {
+				const user = userDoc.data();
+
+				if (user.approved) {
+					await createMonthlyPayments(userDoc.id);
+				}
 			}
-		}
 
-		alert("Paiments Mensuels generés ✔");
+			alert("Paiements mensuels générés ✔");
+		} catch (error) {
+			console.error(error);
+
+			alert("Erreur lors de la génération des paiements.");
+		} finally {
+			setGeneratingPayments(false);
+		}
 	};
 	useEffect(() => {
 		const loadPaymentSettings = async () => {
-			const settings = await getPaymentSettings();
+			try {
+				const settings = await getPaymentSettings();
 
-			setMonthlyAmount(settings.monthlyAmount.toString());
+				setMonthlyAmount(settings.monthlyAmount.toString());
+				setPaymentStartMonth(settings.paymentStartMonth);
+			} catch (error) {
+				console.error("Erreur lors du chargement des paramètres:", error);
+			}
 		};
 
 		loadPaymentSettings();
 	}, []);
-	const handleSaveMonthlyAmount = async () => {
+	const handleSavePaymentSettings = async () => {
 		const amount = Number(monthlyAmount);
 
 		if (!amount || amount <= 0) {
@@ -49,19 +74,67 @@ export default function AdminScreen() {
 			return;
 		}
 
+		if (!paymentStartMonth) {
+			alert("Veuillez sélectionner le mois de début des paiements.");
+			return;
+		}
+
 		try {
-			setSavingAmount(true);
+			setSavingSettings(true);
 
-			await updateMonthlyAmount(amount, user?.uid);
+			await updatePaymentSettings(
+				{
+					monthlyAmount: amount,
+					paymentStartMonth,
+				},
+				user?.uid,
+			);
 
-			alert("Montant mensuel mis à jour ✔");
+			alert("Paramètres des paiements mis à jour ✔");
 		} catch (error) {
 			console.error(error);
-			alert("Erreur lors de la mise à jour du montant.");
+			alert("Erreur lors de la mise à jour des paramètres.");
 		} finally {
-			setSavingAmount(false);
+			setSavingSettings(false);
 		}
 	};
+	const now = new Date();
+
+	const currentYear = now.getFullYear();
+	const currentMonth = now.getMonth() + 1;
+
+	const monthNames = [
+		"Janvier",
+		"Février",
+		"Mars",
+		"Avril",
+		"Mai",
+		"Juin",
+		"Juillet",
+		"Août",
+		"Septembre",
+		"Octobre",
+		"Novembre",
+		"Décembre",
+	];
+
+	const availableMonths: {
+		label: string;
+		value: string;
+	}[] = [];
+
+	for (let year = currentYear - 1; year <= currentYear; year++) {
+		const lastMonth = year === currentYear ? currentMonth : 12;
+
+		for (let month = 1; month <= lastMonth; month++) {
+			const monthValue = String(month).padStart(2, "0");
+
+			availableMonths.push({
+				label: `${monthNames[month - 1]} ${year}`,
+				value: `${year}-${monthValue}`,
+			});
+		}
+	}
 	return (
 		<Screen>
 			<ScrollView
@@ -75,26 +148,63 @@ export default function AdminScreen() {
 				</Text>
 
 				<View className="flex-row flex-wrap gap-2">
-					<View className="w-full flex-row justify-start items-center gap-x-2 mb-4">
-						<Text className="text-lg font-bold text-gray-800">
-							Mensualité en DA
+					<View className="w-full bg-white rounded-xl p-4 mb-4">
+						<Text className="text-lg font-bold text-gray-800 mb-4">
+							Paramètres des paiements
 						</Text>
 
-						<TextInput
-							value={monthlyAmount}
-							onChangeText={setMonthlyAmount}
-							keyboardType="numeric"
-							placeholder="Montant"
-							className="w-[70px] border border-gray-300 bg-white rounded-lg p-3 font-semibold"
-						/>
+						{/* Monthly Amount */}
+						<View className="flex-row items-center mb-4">
+							<Text className="text-base font-semibold text-gray-700 flex-1">
+								Mensualité en DA
+							</Text>
 
+							<TextInput
+								value={monthlyAmount}
+								onChangeText={setMonthlyAmount}
+								keyboardType="numeric"
+								placeholder="Montant"
+								className="w-[90px] border border-gray-300 bg-white rounded-lg p-3 font-semibold"
+							/>
+						</View>
+
+						{/* Payment Start Month */}
+						<View className="mb-4">
+							<Text className="text-base font-semibold text-gray-700 mb-2">
+								Mois de début des paiements
+							</Text>
+
+							<View className="border border-gray-300 rounded-lg overflow-hidden">
+								<Picker
+									selectedValue={paymentStartMonth}
+									onValueChange={(value) => setPaymentStartMonth(value)}
+								>
+									<Picker.Item
+										label="Sélectionner un mois"
+										value=""
+									/>
+
+									{availableMonths.map((month) => (
+										<Picker.Item
+											key={month.value}
+											label={month.label}
+											value={month.value}
+										/>
+									))}
+								</Picker>
+							</View>
+						</View>
+
+						{/* Save */}
 						<Pressable
-							onPress={handleSaveMonthlyAmount}
-							disabled={savingAmount}
-							className="bg-teal-700 rounded-md p-3 ml-auto"
+							onPress={handleSavePaymentSettings}
+							disabled={savingSettings}
+							className="bg-teal-700 rounded-md p-3"
 						>
 							<Text className="text-white text-center font-bold">
-								{savingAmount ? "Enregistrement..." : "Enregistrer"}
+								{savingSettings
+									? "Enregistrement..."
+									: "Enregistrer les paramètres"}
 							</Text>
 						</Pressable>
 					</View>
@@ -155,7 +265,7 @@ export default function AdminScreen() {
 							</Pressable>
 							<Pressable
 								onPress={() => setAdvancePaymentVisible(true)}
-								className="w-[48%] rounded-md bg-green-600 py-3 px-4 mb-3"
+								className="w-[48%] justify-center rounded-md bg-green-600 py-3 px-4 mb-3"
 							>
 								<Text className="text-lg font-bold text-white text-center">
 									Paiement anticipé
@@ -163,11 +273,27 @@ export default function AdminScreen() {
 							</Pressable>
 							<Pressable
 								onPress={generateMonthlyPayments}
-								className="w-[48%] rounded-md bg-green-600 py-3 px-4 mb-3"
+								disabled={generatingPayments}
+								className={`w-[48%] rounded-md py-3 px-4 mb-3 ${
+									generatingPayments ? "bg-gray-400" : "bg-yellow-400"
+								}`}
 							>
-								<Text className="text-lg font-bold text-white text-center">
-									Déclancher les Paiments mensuels
-								</Text>
+								{generatingPayments ? (
+									<View className="flex-row items-center justify-center">
+										<ActivityIndicator
+											size="small"
+											color="white"
+										/>
+
+										<Text className="text-lg font-bold text-white ml-2">
+											Génération en cours...
+										</Text>
+									</View>
+								) : (
+									<Text className="text-lg font-bold text-green-800 text-center">
+										Déclencher les paiements mensuelss
+									</Text>
+								)}
 							</Pressable>
 						</>
 					)}

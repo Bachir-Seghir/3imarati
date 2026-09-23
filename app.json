@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "3imarati",
 		"slug": "3imarati",
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/logo-4.png",
 		"scheme": "imarati",
@@ -14,7 +14,8 @@
 			"predictiveBackGestureEnabled": false,
 			"permissions": ["android.permission.RECORD_AUDIO"],
 			"package": "com.imarati.app",
-			"softwareKeyboardLayoutMode": "resize"
+			"softwareKeyboardLayoutMode": "resize",
+			"googleServicesFile": "./google-services.json"
 		},
 		"web": {
 			"output": "static",
@@ -22,6 +23,13 @@
 		},
 		"plugins": [
 			"expo-router",
+			[
+				"expo-notifications",
+				{
+					"color": "#065F46",
+					"defaultChannel": "default"
+				}
+			],
 			[
 				"expo-splash-screen",
 				{

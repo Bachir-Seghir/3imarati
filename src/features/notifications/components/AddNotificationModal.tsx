@@ -52,9 +52,9 @@ export function AddNotificationModal() {
 			{/* Button */}
 			<Pressable
 				onPress={() => setModalVisible(true)}
-				className="rounded-md bg-red-400 py-3 px-4 mb-3"
+				className="rounded-md bg-yellow-400 py-3 px-4 mb-3"
 			>
-				<Text className="text-lg font-bold text-white text-center">
+				<Text className="text-lg font-bold text-green-800 text-center">
 					Ajouter une Notification
 				</Text>
 			</Pressable>
@@ -73,7 +73,7 @@ export function AddNotificationModal() {
 				>
 					{/* MODAL CONTENT - click here does NOT close modal */}
 					<Pressable
-						className="bg-white rounded-t-3xl p-6 max-h-[90%]"
+						className="bg-white rounded-t-3xl p-6 h-[80%]"
 						onPress={(e) => e.stopPropagation()}
 					>
 						<ScrollView showsVerticalScrollIndicator={false}>
