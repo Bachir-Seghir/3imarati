@@ -161,6 +161,63 @@ export const notifyNewComplaint = onDocumentCreated(
     }
 );
 
+/**
+ * COMPLAINT STATUS CHANGED
+ * Notify all approved residents when a complaint status changes.
+ */
+export const notifyComplaintStatusChanged = onDocumentUpdated(
+    "complaints/{complaintId}",
+    async (event) => {
+        const before = event.data?.before.data();
+        const after = event.data?.after.data();
+
+        if (!before || !after) {
+            return;
+        }
+
+        // Notify only when the status actually changes.
+        if (before.status === after.status) {
+            return;
+        }
+
+        const complaintId = event.params.complaintId;
+
+        // This field will be added to the complaint type later.
+        const complaintNumber =
+            typeof after.complaintNumber === "string"
+                ? after.complaintNumber
+                : complaintId;
+
+        const statusLabels: Record<string, string> = {
+            En_Attente: "En attente",
+            En_Traitement: "En traitement",
+            "Résolue": "Résolue",
+        };
+
+        const newStatus =
+            statusLabels[after.status] ?? after.status;
+
+        const userIds = await getApprovedUserIds();
+        const tokens = await getPushTokensForUsers(userIds);
+
+        await sendPushNotification(
+            tokens,
+            "État de réclamation modifié",
+            `La réclamation N° ${complaintNumber} est maintenant : ${newStatus}`,
+            {
+                type: "complaint_status_changed",
+                complaintId,
+                complaintNumber,
+                status: after.status,
+            }
+        );
+
+        console.log(
+            `Complaint ${complaintNumber} status changed: ` +
+            `${before.status} -> ${after.status}`
+        );
+    }
+);
 
 /* ============================================================
    👤 NEW RESIDENT

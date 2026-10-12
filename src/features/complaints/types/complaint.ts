@@ -5,7 +5,7 @@ export type Complaint = {
     userName: string;
     floor: number;
     door: number;
-
+    complaintNumber: string;
     assignedToId?: string | null;
     assignedToName?: string | null;
     assignedAt?: any;

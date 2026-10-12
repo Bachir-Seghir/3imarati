@@ -48,7 +48,7 @@ export default function HomeScreen() {
 							</Text>
 
 							<Text className="flex-md text-xl font-bold mt-1">
-								{residents} / 72
+								{residents - 1} / 72
 							</Text>
 						</View>
 

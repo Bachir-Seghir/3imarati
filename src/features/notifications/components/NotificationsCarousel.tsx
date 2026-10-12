@@ -92,10 +92,10 @@ export default function NotificationsCarousel() {
 									</View>
 
 									<Text
-										className="text-white font-bold text-xl mt-3"
+										className="text-white font-bold text-lg mt-3"
 										numberOfLines={2}
 									>
-										{item.title}
+										{item.title.slice(0, 30)}...
 									</Text>
 
 									<View className="flex-row justify-between">

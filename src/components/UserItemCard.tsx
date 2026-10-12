@@ -43,7 +43,7 @@ export const UserItemCard = ({ user }: { user: UserItem }) => {
 				<Text className="font-bold text-lg">{user.fullName}</Text>
 				<Text>{user.email}</Text>
 				<Text>
-					Floor: {user.floor} | Door: {user.door}
+					Étage : {user.floor} | Porte: {user.door}
 				</Text>
 				<Text>Num Tél: {user.phone}</Text>
 

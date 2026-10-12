@@ -35,7 +35,7 @@ export default function ComplaintCard({
 	onResolve,
 }: ComplaintCardProps) {
 	const [imageVisible, setImageVisible] = useState(false);
-
+	const [detailsVisible, setDetailsVisible] = useState(false);
 	const isAdmin = hasAnyRole(profile, ["admin", "superAdmin"]);
 	const isAssignee = complaint.assignedToId === currentUserId;
 	const canManage = isAssignee || isAdmin;
@@ -45,38 +45,30 @@ export default function ComplaintCard({
 			<View className="rounded-xl border border-slate-200 bg-white shadow-sm">
 				{/* Complaint information */}
 				<View className="p-4">
+					<Text className="text-xs mb-2 font-bold text-gray-400">
+						N° : {complaint.complaintNumber}
+					</Text>
 					<Text className="text-base font-bold text-gray-800">
 						Titre : {complaint.title}
 					</Text>
 
 					<Text className="mt-1 text-sm leading-5 text-gray-600">
-						Détails : {complaint.description}
+						Détails : {complaint.description.slice(0, 40)}...
 					</Text>
-
-					{/* Image link */}
-					{complaint.imageUrl ? (
-						<Pressable
-							onPress={() => setImageVisible(true)}
-							className="mt-4 flex-row items-center self-start rounded-lg bg-green-50 px-3 py-2"
-							accessibilityRole="button"
-							accessibilityLabel="Voir l'image de la réclamation"
-						>
-							<Ionicons
-								name="image-outline"
-								size={21}
-								color="#065F46"
-							/>
-							<Text className="ml-2 font-semibold text-green-800 underline">
-								Voir l’image
-							</Text>
-							<Ionicons
-								name="open-outline"
-								size={17}
-								color="#065F46"
-								style={{ marginLeft: 6 }}
-							/>
-						</Pressable>
-					) : null}
+					<Pressable
+						onPress={() => setDetailsVisible(true)}
+						className="w-[60%] mt-4 mx-auto flex-row items-center justify-center rounded-lg bg-gray-200 py-2 px-3"
+						accessibilityRole="button"
+					>
+						<Ionicons
+							name="eye-outline"
+							size={20}
+							color="#065F46"
+						/>
+						<Text className="ml-2 font-semibold text-green-700">
+							Voir les détails
+						</Text>
+					</Pressable>
 				</View>
 
 				{/* Status and actions */}
@@ -175,6 +167,148 @@ export default function ComplaintCard({
 					</View>
 				</View>
 			</View>
+			{/* Complaint details modal */}
+			<Modal
+				visible={detailsVisible}
+				transparent
+				animationType="slide"
+				onRequestClose={() => setDetailsVisible(false)}
+			>
+				<View className="flex-1 justify-center bg-black/50 p-4">
+					<View className="max-h-[85%] overflow-hidden rounded-2xl bg-white">
+						{/* Modal header */}
+						<View className="flex-row items-center justify-between bg-green-800 p-4">
+							<View className="flex-1">
+								<Text className="text-lg font-bold text-white">
+									Détails de la réclamation
+								</Text>
+
+								<Text className="mt-1 text-sm text-green-100">
+									N° {complaint.complaintNumber ?? "Non attribué"}
+								</Text>
+							</View>
+
+							<Pressable
+								onPress={() => setDetailsVisible(false)}
+								accessibilityRole="button"
+								accessibilityLabel="Fermer les détails"
+								className="ml-3 rounded-full p-2"
+							>
+								<Ionicons
+									name="close"
+									size={26}
+									color="#FFFFFF"
+								/>
+							</Pressable>
+						</View>
+
+						{/* Scrollable details */}
+						<ScrollView
+							showsVerticalScrollIndicator
+							contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+						>
+							{/* Complaint number */}
+							<Text className="text-sm font-medium text-gray-500">
+								Numéro de réclamation
+							</Text>
+
+							<Text className="mb-4 text-base font-bold text-green-800">
+								{complaint.complaintNumber ?? "Non attribué"}
+							</Text>
+
+							{/* Title */}
+							<Text className="text-sm font-medium text-gray-500">Titre</Text>
+
+							<Text className="mb-4 text-base font-bold text-gray-900">
+								{complaint.title}
+							</Text>
+
+							{/* Creator */}
+							<View className="mb-4 rounded-xl bg-green-50 p-3">
+								<View className="mb-2 flex-row items-center">
+									<Ionicons
+										name="person-circle-outline"
+										size={22}
+										color="#065F46"
+									/>
+
+									<Text className="ml-2 text-sm font-semibold text-green-800">
+										Créée par
+									</Text>
+								</View>
+
+								<Text className="text-base font-bold text-gray-900">
+									{complaint.userName ??
+										complaint.createdByName ??
+										"Nom indisponible"}
+								</Text>
+
+								<Text className="mt-1 text-sm text-gray-600">
+									Étage : {complaint.floor ?? "-"}
+									{"  •  "}
+									Porte : {complaint.door ?? "-"}
+								</Text>
+							</View>
+
+							{/* Full description */}
+							<Text className="text-sm font-medium text-gray-500">
+								Description complète
+							</Text>
+
+							<Text className="mb-5 mt-2 text-base leading-6 text-gray-800">
+								{complaint.description || "Aucune description"}
+							</Text>
+
+							{/* Images displayed directly */}
+							{complaint.imageUrl ? (
+								<View>
+									<Text className="mb-3 text-sm font-semibold text-gray-700">
+										Photos jointes
+									</Text>
+
+									<Pressable
+										onPress={() => setImageVisible(true)}
+										accessibilityRole="button"
+										accessibilityLabel="Agrandir la photo"
+									>
+										<Image
+											source={{ uri: complaint.imageUrl }}
+											resizeMode="contain"
+											style={{
+												width: "100%",
+												height: 280,
+												borderRadius: 12,
+												backgroundColor: "#F3F4F6",
+											}}
+										/>
+									</Pressable>
+
+									<Text className="mt-2 text-center text-xs text-gray-500">
+										Appuyez sur la photo pour l’agrandir
+									</Text>
+								</View>
+							) : (
+								<View className="rounded-lg bg-gray-50 p-3">
+									<Text className="text-sm text-gray-500">
+										Aucune photo jointe
+									</Text>
+								</View>
+							)}
+						</ScrollView>
+
+						{/* Footer */}
+						<View className="border-t border-gray-200 p-3">
+							<Pressable
+								onPress={() => setDetailsVisible(false)}
+								className="items-center rounded-xl bg-green-800 p-3"
+								accessibilityRole="button"
+							>
+								<Text className="font-semibold text-white">Fermer</Text>
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</Modal>
 
 			{/* Full-screen image preview */}
 			<Modal

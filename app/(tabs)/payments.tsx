@@ -58,7 +58,7 @@ export default function PaymentsScreen() {
 	// UNPAID
 	// ======================================================
 
-	const unpaidPayments = selectedMonthPayments.filter(
+	/* const unpaidPayments = selectedMonthPayments.filter(
 		(payment) => !payment.paid,
 	);
 
@@ -73,7 +73,32 @@ export default function PaymentsScreen() {
 			const bTime = b.createdAt?.toMillis?.() ?? 0;
 
 			return bTime - aTime;
-		});
+		}); */
+
+	// Sort by floor first, then by door
+	const sortByFloorAndDoor = (a: any, b: any) => {
+		const floorA = Number(a.floor ?? 0);
+		const floorB = Number(b.floor ?? 0);
+
+		if (floorA !== floorB) {
+			return floorA - floorB;
+		}
+
+		const doorA = Number(a.door ?? 0);
+		const doorB = Number(b.door ?? 0);
+
+		return doorA - doorB;
+	};
+
+	// UNPAID PAYMENTS
+	const unpaidPayments = selectedMonthPayments
+		.filter((payment) => !payment.paid)
+		.sort(sortByFloorAndDoor);
+
+	// PAID PAYMENTS
+	const paidPayments = selectedMonthPayments
+		.filter((payment) => payment.paid)
+		.sort(sortByFloorAndDoor);
 
 	const handleCancelPayment = async (paymentId: string) => {
 		try {

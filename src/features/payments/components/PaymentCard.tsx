@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 
@@ -23,51 +24,74 @@ export const PaymentCard = ({
 
 	return (
 		<>
-			<View className="bg-white p-3 rounded-xl mb-2 border border-slate-200">
-				<Text>
-					Résident : {payment.fullName} - {payment.floor}-{payment.door}
+			<View
+				className={`rounded-md border p-2 items-center justify-between min-h-[120px] ${
+					payment.paid
+						? "bg-green-50 border-green-200"
+						: payment.cancelled
+							? "bg-red-50 border-red-200"
+							: "bg-white border-slate-200"
+				}`}
+			>
+				{/* Floor - Door */}
+				<Text
+					className="text-base font-bold text-slate-800"
+					numberOfLines={1}
+				>
+					{payment.floor} - {payment.door}
 				</Text>
 
-				<Text>Mois : {payment.month}</Text>
-				<Text>Montant : {payment.amount} DA</Text>
+				{/* Month */}
+				<Text className="text-xs text-slate-500 mt-1">{payment.month}</Text>
 
-				{payment.paid ? (
-					<Text className="text-green-500 mt-1">✔ Payé</Text>
-				) : (
-					<Text className="text-orange-500 mt-1">En attente</Text>
-				)}
+				{/* Status icon */}
+				<View className="mt-2">
+					{payment.cancelled ? (
+						<Ionicons
+							name="close-circle"
+							size={24}
+							color="#DC2626"
+						/>
+					) : payment.paid ? (
+						<Ionicons
+							name="checkmark-circle"
+							size={24}
+							color="#16A34A"
+						/>
+					) : (
+						<Ionicons
+							name="close-circle"
+							size={24}
+							color="#EA580C"
+						/>
+					)}
+				</View>
 
-				{canManage && (
-					<>
-						{!payment.paid && !payment.cancelled && (
-							<Pressable
-								onPress={() => onPay(payment.id)}
-								className="bg-green-600 p-2 mt-2 mx-auto rounded w-[60%]"
-							>
-								<Text className="text-white text-center font-semibold">
-									Paiement effectué
-								</Text>
-							</Pressable>
-						)}
-
-						{payment.paid && (
-							<Pressable
-								onPress={() => setConfirmVisible(true)}
-								className="bg-orange-600 p-2 mt-2 mx-auto rounded w-[80%]"
-							>
-								<Text className="text-white text-center font-semibold">
-									Annuler le paiement
-								</Text>
-							</Pressable>
-						)}
-
-						{payment.cancelled && (
-							<Text className="text-red-600 mt-2">Paiement annulé</Text>
-						)}
-					</>
-				)}
+				{/* Action button */}
+				{canManage &&
+					!payment.cancelled &&
+					(payment.paid ? (
+						<Pressable
+							onPress={() => setConfirmVisible(true)}
+							className="bg-orange-600 rounded-md px-2 py-1 mt-2 w-full"
+						>
+							<Text className="text-white text-xs font-semibold text-center">
+								Annuler
+							</Text>
+						</Pressable>
+					) : (
+						<Pressable
+							onPress={() => onPay(payment.id)}
+							className="bg-green-600 rounded-md px-2 py-1 mt-2 w-full"
+						>
+							<Text className="text-white text-xs font-semibold text-center">
+								Approuver
+							</Text>
+						</Pressable>
+					))}
 			</View>
 
+			{/* Cancellation confirmation */}
 			<Modal
 				visible={confirmVisible}
 				transparent
@@ -75,12 +99,12 @@ export const PaymentCard = ({
 				onRequestClose={() => setConfirmVisible(false)}
 			>
 				<View className="flex-1 bg-black/50 justify-center items-center px-6">
-					<View className="bg-white rounded-2xl p-5 w-full max-w-md">
-						<Text className="text-xl font-bold mb-3">
+					<View className="bg-white rounded-xl p-5 w-full max-w-md">
+						<Text className="text-lg font-bold mb-3">
 							Annuler le paiement ?
 						</Text>
 
-						<Text className="text-gray-600 mb-5">
+						<Text className="text-slate-600 mb-5">
 							Confirmez-vous l'annulation du paiement de {payment.amount} DA
 							pour {payment.month} ? Le montant sera déduit du budget du
 							bâtiment.
@@ -88,7 +112,7 @@ export const PaymentCard = ({
 
 						<Pressable
 							onPress={handleConfirmCancellation}
-							className="bg-orange-600 rounded-lg p-3 mb-3"
+							className="bg-orange-600 rounded-md p-3 mb-3"
 						>
 							<Text className="text-white text-center font-semibold">
 								Confirmer l'annulation
@@ -97,9 +121,9 @@ export const PaymentCard = ({
 
 						<Pressable
 							onPress={() => setConfirmVisible(false)}
-							className="bg-gray-100 rounded-lg p-3"
+							className="bg-slate-100 rounded-md p-3"
 						>
-							<Text className="text-gray-700 text-center font-semibold">
+							<Text className="text-slate-700 text-center font-semibold">
 								Retour
 							</Text>
 						</Pressable>
