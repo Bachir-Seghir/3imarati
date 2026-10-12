@@ -10,10 +10,12 @@ import {
     doc,
     getDoc,
     getDocs,
+    increment,
     query,
+    runTransaction,
     serverTimestamp,
     updateDoc,
-    where,
+    where
 } from "firebase/firestore";
 import { getPaymentSettings } from "./paymentsSettings.service";
 
@@ -341,4 +343,49 @@ export const markPaymentAsPaid = async (
     });
 
     await addToBudget(payment.amount);
+};
+
+
+export const cancelPayment = async (paymentId: string) => {
+    const paymentRef = doc(db, "payments", paymentId);
+    const budgetRef = doc(db, "budget", "main");
+
+    await runTransaction(db, async (transaction) => {
+        const paymentSnap = await transaction.get(paymentRef);
+        const budgetSnap = await transaction.get(budgetRef);
+
+        if (!paymentSnap.exists()) {
+            throw new Error("Paiement introuvable.");
+        }
+
+        if (!budgetSnap.exists()) {
+            throw new Error("Document du budget introuvable.");
+        }
+
+        const payment = paymentSnap.data() as Payment;
+
+        if (!payment.paid) {
+            throw new Error("Ce paiement n'est pas actuellement payé.");
+        }
+
+        if (
+            typeof payment.amount !== "number" ||
+            !Number.isFinite(payment.amount) ||
+            payment.amount <= 0
+        ) {
+            throw new Error("Montant du paiement invalide.");
+        }
+
+        // Mark the payment as unpaid and record the cancellation.
+        transaction.update(paymentRef, {
+            paid: false,
+            cancelledAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+        });
+
+        // Deduct the payment amount from the building budget.
+        transaction.update(budgetRef, {
+            amount: increment(-payment.amount),
+        });
+    });
 };

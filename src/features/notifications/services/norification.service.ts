@@ -32,12 +32,14 @@ export function subscribeNotifications(
 
 export async function createNotification({
     title,
+    imageUrl,
     description,
     category,
     createdById,
     createdByName
 }: {
     title: string;
+    imageUrl?: string | null;
     description: string | null;
     category: 'Importante' | 'Info';
     createdById: string;
@@ -45,6 +47,7 @@ export async function createNotification({
 }) {
     await addDoc(collection(db, "notifications"), {
         title,
+        imageUrl: imageUrl ?? null,
         description,
         category,
         active: true,
@@ -72,18 +75,6 @@ export async function updateNotification(
     })
 }
 
-/**
- * Soft delete Notification
- */
-
-export async function hideNotification(
-    id: string,
-) {
-    await updateDoc(doc(db, "notifications", id), {
-        active: false,
-        updatedAt: serverTimestamp()
-    })
-}
 
 /**
  * Permanent delete 

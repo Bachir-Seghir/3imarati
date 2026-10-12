@@ -1,9 +1,9 @@
 import { ComplaintsFilter } from "@/src/components/ComplaintsFilter";
 import Screen from "@/src/components/Screen";
 import { useAuth } from "@/src/features/auth/context/AuthContext";
+import ComplaintCard from "@/src/features/complaints/components/ComplaintCard";
 import { db } from "@/src/services/firebase";
 import { hasAnyRole } from "@/src/utils/RolesCheck";
-import { Ionicons } from "@expo/vector-icons";
 import {
 	collection,
 	doc,
@@ -14,15 +14,7 @@ import {
 	updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import {
-	Platform,
-	Pressable,
-	ScrollView,
-	Text,
-	TextInput,
-	View,
-} from "react-native";
-
+import { Platform, ScrollView, Text } from "react-native";
 function getStatusColor(status: string) {
 	switch (status) {
 		case "En_Attente":
@@ -122,112 +114,15 @@ export default function ComplaintsScreen() {
 				/>
 
 				{filteredComplaints.map((item) => (
-					<View
+					<ComplaintCard
 						key={item.id}
-						className="bg-white rounded-md border border-slate-200 shadow-sm"
-					>
-						<View className="p-3">
-							<Text className="font-semibold text-gray-800 text-md">
-								Titre : {item.title}
-							</Text>
-
-							<TextInput
-								maxLength={100}
-								className="text-gray-500 text-sm"
-							>
-								Détails : {item.description}
-							</TextInput>
-						</View>
-
-						<View className="flex gap-y-1 bg-slate-100 p-3 rounded-br-md rounded-bl-md">
-							<View className="flex flex-row justify-between py-1">
-								<Text className="text-sm font-bold text-gray-600">
-									Catégorie : {item.category}
-								</Text>
-
-								<Text
-									className={`${getStatusColor(
-										item.status,
-									)} text-sm font-semibold`}
-								>
-									État : {item.status}
-								</Text>
-							</View>
-
-							<View className="items-end">
-								<Text
-									className={`${
-										item.priority === "Importante"
-											? "text-red-400"
-											: "text-gray-700"
-									} text-sm font-bold`}
-								>
-									Priorité : {item.priority}
-								</Text>
-							</View>
-
-							<View className="flex-row justify-between">
-								<Text className="font-semibold text-blue-500 text-sm">
-									Créé par :
-								</Text>
-
-								<Text className="font-semibold text-blue-500 text-sm">
-									{item.userName} - {item.floor}-{item.door}
-								</Text>
-							</View>
-							{item.assignedToName && (
-								<View className="flex-row justify-between">
-									<Text className="font-semibold text-orange-500 text-sm">
-										Pris en charge par : ''
-										<Ionicons
-											name="person-circle-outline"
-											size={18}
-											color="#orange"
-										/>
-										''
-									</Text>
-									<Text className="font-semibold text-orange-500 text-sm">
-										{item.assignedToName}
-									</Text>
-								</View>
-							)}
-							{item.status === "En_Attente" && (
-								<Pressable
-									className="bg-orange-500 p-2 rounded-md"
-									onPress={() => handleTakeComplaint(item)}
-								>
-									<Text className="text-white text-sm text-center font-semibold">
-										Prendre en charge
-									</Text>
-								</Pressable>
-							)}
-							<View className="flex-row gap-2">
-								{item.status === "En_Traitement" &&
-									item.assignedToId === user?.uid && (
-										<Pressable
-											className="bg-gray-500 p-2 mt-2 rounded-md flex-[2]"
-											onPress={() => handleReleaseComplaint(item)}
-										>
-											<Text className="text-white text-center text-sm font-semibold">
-												Ne pas prendre en charge
-											</Text>
-										</Pressable>
-									)}
-								{item.status === "En_Traitement" &&
-									(item.assignedToId === user?.uid ||
-										hasAnyRole(profile, ["admin", "superAdmin"])) && (
-										<Pressable
-											className="bg-green-600 p-2 mt-2 rounded-md flex-1"
-											onPress={() => handleResolveComplaint(item)}
-										>
-											<Text className="text-white text-center text-sm font-semibold">
-												Résolue
-											</Text>
-										</Pressable>
-									)}
-							</View>
-						</View>
-					</View>
+						complaint={item}
+						currentUserId={user?.uid}
+						profile={profile}
+						onTake={handleTakeComplaint}
+						onRelease={handleReleaseComplaint}
+						onResolve={handleResolveComplaint}
+					/>
 				))}
 			</ScrollView>
 		</Screen>

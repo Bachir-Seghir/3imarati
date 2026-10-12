@@ -35,7 +35,7 @@ export function MonthlyPaymentCalendar({
 		<View className="bg-white rounded-2xl p-4 mb-4">
 			<View className="flex-row justify-between items-center mb-4">
 				<Text className="text-lg font-bold text-gray-800">
-					Mensualités {currentYear}
+					Mensualités {selectedYear}
 				</Text>
 			</View>
 
@@ -66,7 +66,7 @@ export function MonthlyPaymentCalendar({
 				{months.map((monthName, index) => {
 					const monthNumber = String(index + 1).padStart(2, "0");
 
-					const monthValue = `${currentYear}-${monthNumber}`;
+					const monthValue = `${selectedYear}-${monthNumber}`;
 
 					const selected = selectedMonth === monthValue;
 

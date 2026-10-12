@@ -5,6 +5,7 @@ export const MonthlyPaymentsList = ({
 	paid,
 	canManage,
 	onPay,
+	onCancel,
 }: any) => {
 	return (
 		<>
@@ -14,6 +15,7 @@ export const MonthlyPaymentsList = ({
 					payment={p}
 					canManage={canManage}
 					onPay={onPay}
+					onCancel={onCancel}
 				/>
 			))}
 
@@ -22,6 +24,8 @@ export const MonthlyPaymentsList = ({
 					key={p.id}
 					payment={p}
 					canManage={canManage}
+					onCancel={onCancel}
+					onPay={onPay}
 				/>
 			))}
 		</>

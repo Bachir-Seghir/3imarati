@@ -252,7 +252,7 @@ export const notifyNewInformation = onDocumentCreated(
 
 export const generateMonthlyPayments = onSchedule(
     {
-        schedule: "0 0 1 * *",
+        schedule: "0 0 2 * *",
         timeZone: "Africa/Algiers",
     },
     async () => {

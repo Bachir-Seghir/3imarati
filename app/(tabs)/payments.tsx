@@ -14,11 +14,14 @@ import {
 	rejectCotisation,
 } from "@/src/features/payments/services/cotisation.service";
 
-import { markPaymentAsPaid } from "@/src/features/payments/services/payment.service";
+import {
+	cancelPayment,
+	markPaymentAsPaid,
+} from "@/src/features/payments/services/payment.service";
 import { hasAnyRole } from "@/src/utils/RolesCheck";
 
 import { useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 export default function PaymentsScreen() {
 	const { profile } = useAuth();
@@ -71,6 +74,21 @@ export default function PaymentsScreen() {
 
 			return bTime - aTime;
 		});
+
+	const handleCancelPayment = async (paymentId: string) => {
+		try {
+			await cancelPayment(paymentId);
+			Alert.alert("Succès", "Paiement annulé et budget corrigé.");
+		} catch (error) {
+			console.error("Error cancelling payment:", error);
+			Alert.alert(
+				"Erreur",
+				error instanceof Error
+					? error.message
+					: "Impossible d'annuler le paiement.",
+			);
+		}
+	};
 
 	return (
 		<Screen>
@@ -163,6 +181,7 @@ export default function PaymentsScreen() {
 									paid={[]}
 									canManage={canManage}
 									onPay={markPaymentAsPaid}
+									nCancel={handleCancelPayment}
 								/>
 							</View>
 						)}
@@ -182,6 +201,7 @@ export default function PaymentsScreen() {
 									paid={paidPayments}
 									canManage={canManage}
 									onPay={markPaymentAsPaid}
+									onCancel={handleCancelPayment}
 								/>
 							</View>
 						)}

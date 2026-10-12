@@ -1,15 +1,13 @@
+import AppAlertModal from "@/src/components/AppAlertModal";
 import Screen from "@/src/components/Screen";
+import {
+	deleteNotification,
+	updateNotification,
+} from "@/src/features/notifications/services/norification.service";
+import { Notification } from "@/src/features/notifications/types/notification";
 import { db } from "@/src/services/firebase";
 import { Ionicons } from "@expo/vector-icons";
-import {
-	collection,
-	doc,
-	onSnapshot,
-	orderBy,
-	query,
-	serverTimestamp,
-	updateDoc,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 import { Platform, Pressable, ScrollView, Text, View } from "react-native";
 
@@ -21,7 +19,10 @@ export default function NotificationsManager() {
 
 	const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 	const [activeFilter, setActiveFilter] = useState<ActiveFilter>("all");
-
+	const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+	const [notificationToDelete, setNotificationToDelete] =
+		useState<Notification | null>(null);
+	const [deleting, setDeleting] = useState(false);
 	useEffect(() => {
 		const q = query(
 			collection(db, "notifications"),
@@ -39,20 +40,6 @@ export default function NotificationsManager() {
 
 		return () => unsubscribe();
 	}, []);
-
-	const hideNotification = async (notification: any) => {
-		await updateDoc(doc(db, "notifications", notification.id), {
-			active: false,
-			updatedAt: serverTimestamp(),
-		});
-	};
-
-	const showNotification = async (notification: any) => {
-		await updateDoc(doc(db, "notifications", notification.id), {
-			active: true,
-			updatedAt: serverTimestamp(),
-		});
-	};
 
 	/**
 	 * Filter + sort notifications
@@ -83,6 +70,31 @@ export default function NotificationsManager() {
 
 		return result;
 	}, [notifications, activeFilter, sortOrder]);
+
+	const confirmDeleteNotification = (item: Notification) => {
+		setNotificationToDelete(item);
+		setDeleteModalVisible(true);
+	};
+
+	const handleDeleteNotification = async () => {
+		if (!notificationToDelete || deleting) return;
+
+		try {
+			setDeleting(true);
+
+			await deleteNotification(notificationToDelete.id);
+
+			setDeleteModalVisible(false);
+			setNotificationToDelete(null);
+		} catch (error) {
+			console.error("DELETE NOTIFICATION ERROR:", error);
+			setDeleteModalVisible(false);
+
+			// Display your reusable error modal here if desired.
+		} finally {
+			setDeleting(false);
+		}
+	};
 
 	return (
 		<Screen>
@@ -229,7 +241,7 @@ export default function NotificationsManager() {
 						<View key={item.id}>
 							<View
 								className={`rounded-2xl p-5 ${
-									important ? "bg-red-500" : "bg-blue-500"
+									important ? "bg-red-500" : "bg-green-700"
 								} ${!item.active ? "opacity-35" : ""}`}
 							>
 								<View className="flex-row items-center">
@@ -259,36 +271,57 @@ export default function NotificationsManager() {
 								</Text>
 
 								{/* Actions */}
-								<View className="flex-row justify-between">
+								<View className="flex-row items-center justify-between mt-3">
 									<Text
-										className="text-white font-bold text-base mt-3"
+										className="text-white font-bold text-base flex-1 mr-2"
 										numberOfLines={2}
 									>
 										{item.createdAt?.toDate?.()?.toLocaleDateString()}
 									</Text>
-									{item.active ? (
+
+									<View className="flex-row items-center gap-2">
+										{item.active ? (
+											<Pressable
+												onPress={() =>
+													updateNotification(item.id, { active: false })
+												}
+												className="bg-white/20 p-2 rounded-lg"
+												accessibilityLabel="Masquer la notification"
+											>
+												<Ionicons
+													name="eye-off-outline"
+													size={22}
+													color="white"
+												/>
+											</Pressable>
+										) : (
+											<Pressable
+												onPress={() =>
+													updateNotification(item.id, { active: true })
+												}
+												className="bg-white/20 p-2 rounded-lg"
+												accessibilityLabel="Afficher la notification"
+											>
+												<Ionicons
+													name="eye-outline"
+													size={22}
+													color="white"
+												/>
+											</Pressable>
+										)}
+
 										<Pressable
-											onPress={() => hideNotification(item)}
-											className="bg-white/20 p-2 rounded-lg"
+											onPress={() => confirmDeleteNotification(item)}
+											className="bg-red-700/80 p-2 rounded-lg"
+											accessibilityLabel="Supprimer la notification"
 										>
 											<Ionicons
-												name="eye-off-outline"
+												name="trash-outline"
 												size={22}
 												color="white"
 											/>
 										</Pressable>
-									) : (
-										<Pressable
-											onPress={() => showNotification(item)}
-											className="bg-white/20 p-2 rounded-lg"
-										>
-											<Ionicons
-												name="eye-outline"
-												size={22}
-												color="white"
-											/>
-										</Pressable>
-									)}
+									</View>
 								</View>
 							</View>
 						</View>
@@ -307,6 +340,20 @@ export default function NotificationsManager() {
 					</View>
 				)}
 			</ScrollView>
+			<AppAlertModal
+				visible={deleteModalVisible}
+				title="Supprimer la notification ?"
+				message={`Voulez-vous supprimer définitivement - ${notificationToDelete?.title ?? ""} - ? Cette action est irréversible.`}
+				confirmText={deleting ? "Suppression..." : "Supprimer"}
+				destructive
+				onClose={() => {
+					if (!deleting) {
+						setDeleteModalVisible(false);
+						setNotificationToDelete(null);
+					}
+				}}
+				onConfirm={handleDeleteNotification}
+			/>
 		</Screen>
 	);
 }
