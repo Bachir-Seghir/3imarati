@@ -3,6 +3,7 @@ import {
 	Dimensions,
 	Image,
 	Modal,
+	Platform,
 	Pressable,
 	ScrollView,
 	Text,
@@ -40,7 +41,7 @@ export default function NotificationsCarousel() {
 
 	return (
 		<>
-			<View>
+			<View className={Platform.OS === "web" ? "mt-6" : ""}>
 				<Text className="mb-1 mx-auto text-slate-700 font-semibold text-xl">
 					Notifications
 				</Text>

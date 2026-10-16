@@ -1,0 +1,20 @@
+{
+	"id": "/",
+	"name": "عمارتي - 3imarati",
+	"short_name": "عمارتي",
+	"description": "تطبيق تسيير العمارة والسكان",
+	"lang": "fr",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#FFFFFF",
+	"theme_color": "#065F46",
+	"icons": [
+		{
+			"src": "/assets/images/logo-4.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	]
+}
